@@ -70,7 +70,7 @@ const AuthAPI = () => {
         
         <p>All API requests require authentication using one of these methods:</p>
 
-        <div className="grid md:grid-cols-2 gap-6 my-6">
+        <div className="responsive-grid-2 section-spacing">
           <Card>
             <CardHeader>
               <div className="flex items-center space-x-2">
@@ -512,7 +512,7 @@ Content-Type: application/json`}
         
         <p>Common error codes returned by the Cavos Service Authentication API:</p>
 
-        <div className="grid md:grid-cols-2 gap-6 my-6">
+        <div className="responsive-grid-2 section-spacing">
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">Authentication Errors</CardTitle>
@@ -572,7 +572,7 @@ Content-Type: application/json`}
 
         <Card className="my-6">
           <CardContent className="pt-6">
-            <div className="grid md:grid-cols-3 gap-6 text-center">
+            <div className="responsive-grid-3 text-center">
               <div>
                 <h4 className="font-semibold text-lg">1,000</h4>
                 <p className="text-sm text-muted-foreground">Requests per hour</p>
@@ -601,7 +601,7 @@ X-RateLimit-Reset: 1640995200`}
 
         <h2>SDKs and Tools</h2>
         
-        <div className="grid md:grid-cols-2 gap-6 my-6">
+        <div className="responsive-grid-2 section-spacing">
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">

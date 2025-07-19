@@ -160,23 +160,23 @@
 
   /* Documentation Specific Styles */
   .doc-content h1 {
-    @apply text-3xl font-bold text-foreground mb-6 pb-3 border-b border-border;
+    @apply text-2xl sm:text-3xl font-bold text-foreground mb-4 sm:mb-6 pb-3 border-b border-border;
   }
 
   .doc-content h2 {
-    @apply text-2xl font-semibold text-foreground mt-8 mb-4;
+    @apply text-xl sm:text-2xl font-semibold text-foreground mt-6 sm:mt-8 mb-3 sm:mb-4;
   }
 
   .doc-content h3 {
-    @apply text-xl font-medium text-foreground mt-6 mb-3;
+    @apply text-lg sm:text-xl font-medium text-foreground mt-4 sm:mt-6 mb-2 sm:mb-3;
   }
 
   .doc-content p {
-    @apply text-muted-foreground leading-relaxed mb-4;
+    @apply text-sm sm:text-base text-muted-foreground leading-relaxed mb-3 sm:mb-4;
   }
 
   .doc-content ul, .doc-content ol {
-    @apply text-muted-foreground space-y-2 mb-4 ml-4;
+    @apply text-sm sm:text-base text-muted-foreground space-y-1 sm:space-y-2 mb-3 sm:mb-4 ml-3 sm:ml-4;
   }
 
   .doc-content li {
@@ -184,19 +184,54 @@
   }
 
   .doc-content blockquote {
-    @apply border-l-4 border-primary pl-4 italic text-muted-foreground;
+    @apply border-l-4 border-primary pl-3 sm:pl-4 italic text-muted-foreground text-sm sm:text-base;
   }
 
   .doc-content table {
-    @apply w-full border-collapse border border-border rounded-lg overflow-hidden;
+    @apply w-full border-collapse border border-border rounded-lg overflow-hidden overflow-x-auto;
   }
 
   .doc-content th {
-    @apply bg-muted text-foreground font-medium p-3 text-left border-b border-border;
+    @apply bg-muted text-foreground font-medium p-2 sm:p-3 text-left border-b border-border text-xs sm:text-sm;
   }
 
   .doc-content td {
-    @apply p-3 border-b border-border text-muted-foreground;
+    @apply p-2 sm:p-3 border-b border-border text-muted-foreground text-xs sm:text-sm;
+  }
+
+  /* Responsive containers */
+  .responsive-container {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+
+  .responsive-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6;
+  }
+
+  .responsive-grid-2 {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6;
+  }
+
+  .responsive-grid-3 {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6;
+  }
+
+  /* Code blocks responsive */
+  .code-block {
+    @apply bg-code-background text-code-foreground border border-code-border rounded-lg p-3 sm:p-4 font-mono text-xs sm:text-sm overflow-x-auto;
+  }
+
+  .code-inline {
+    @apply bg-muted text-foreground px-1 sm:px-1.5 py-0.5 rounded text-xs sm:text-sm font-mono;
+  }
+
+  /* Responsive spacing */
+  .section-spacing {
+    @apply my-6 sm:my-8;
+  }
+
+  .card-spacing {
+    @apply space-y-4 sm:space-y-6;
   }
 
   /* Link Styles */
