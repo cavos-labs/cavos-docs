@@ -1,0 +1,220 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Documentation Design System - Modern tech/blockchain aesthetic */
+
+@layer base {
+  :root {
+    /* Background System */
+    --background: 42 17% 91%;
+    --background-secondary: 42 17% 88%;
+    --background-elevated: 0 0% 100%;
+    --foreground: 0 0% 0%;
+    
+    /* Brand Colors - Cavos Service */
+    --brand-primary: 0 0% 0%;
+    --brand-secondary: 42 17% 91%;
+    --brand-accent: 0 0% 20%;
+    
+    /* Card System */
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
+    --card-border: 0 0% 85%;
+
+    /* Navigation */
+    --nav-background: 42 17% 88%;
+    --nav-foreground: 0 0% 0%;
+    --nav-active: 0 0% 0%;
+    --nav-hover: 42 17% 85%;
+
+    /* Content Colors */
+    --primary: 0 0% 0%;
+    --primary-foreground: 42 17% 91%;
+    --primary-hover: 0 0% 20%;
+
+    --secondary: 42 17% 88%;
+    --secondary-foreground: 0 0% 0%;
+    --secondary-hover: 42 17% 85%;
+
+    --muted: 42 17% 88%;
+    --muted-foreground: 0 0% 40%;
+
+    --accent: 0 0% 20%;
+    --accent-foreground: 42 17% 91%;
+
+    /* Code Blocks */
+    --code-background: 0 0% 0%;
+    --code-foreground: 42 17% 91%;
+    --code-border: 0 0% 20%;
+    --code-comment: 0 0% 60%;
+    --code-keyword: 42 17% 91%;
+    --code-string: 42 17% 91%;
+
+    /* Status Colors */
+    --success: 0 0% 0%;
+    --success-foreground: 42 17% 91%;
+    --warning: 0 0% 0%;
+    --warning-foreground: 42 17% 91%;
+    --destructive: 0 0% 0%;
+    --destructive-foreground: 42 17% 91%;
+
+    /* UI Elements */
+    --border: 0 0% 85%;
+    --input: 0 0% 85%;
+    --ring: 0 0% 0%;
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    /* Dark Background System */
+    --background: 0 0% 0%;
+    --background-secondary: 0 0% 5%;
+    --background-elevated: 0 0% 8%;
+    --foreground: 42 17% 91%;
+    
+    /* Dark Card System */
+    --card: 0 0% 8%;
+    --card-foreground: 42 17% 91%;
+    --card-border: 0 0% 15%;
+
+    /* Dark Navigation */
+    --nav-background: 0 0% 5%;
+    --nav-foreground: 42 17% 91%;
+    --nav-active: 42 17% 91%;
+    --nav-hover: 0 0% 10%;
+
+    /* Dark Content Colors */
+    --primary: 42 17% 91%;
+    --primary-foreground: 0 0% 0%;
+    --primary-hover: 42 17% 85%;
+
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 42 17% 91%;
+    --secondary-hover: 0 0% 15%;
+
+    --muted: 0 0% 10%;
+    --muted-foreground: 0 0% 65%;
+
+    --accent: 42 17% 91%;
+    --accent-foreground: 0 0% 0%;
+
+    /* Dark Code Blocks */
+    --code-background: 0 0% 0%;
+    --code-foreground: 42 17% 91%;
+    --code-border: 0 0% 15%;
+
+    /* Dark Status Colors */
+    --success: 42 17% 91%;
+    --warning: 42 17% 91%;
+    --destructive: 42 17% 91%;
+
+    /* Dark UI Elements */
+    --border: 0 0% 15%;
+    --input: 0 0% 10%;
+    --ring: 42 17% 91%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  /* Code Syntax Highlighting */
+  .code-block {
+    @apply bg-code-background text-code-foreground border border-code-border rounded-lg p-4 font-mono text-sm overflow-x-auto;
+  }
+
+  .code-inline {
+    @apply bg-muted text-foreground px-1.5 py-0.5 rounded text-sm font-mono;
+  }
+
+  /* Documentation Specific Styles */
+  .doc-content h1 {
+    @apply text-3xl font-bold text-foreground mb-6 pb-3 border-b border-border;
+  }
+
+  .doc-content h2 {
+    @apply text-2xl font-semibold text-foreground mt-8 mb-4;
+  }
+
+  .doc-content h3 {
+    @apply text-xl font-medium text-foreground mt-6 mb-3;
+  }
+
+  .doc-content p {
+    @apply text-muted-foreground leading-relaxed mb-4;
+  }
+
+  .doc-content ul, .doc-content ol {
+    @apply text-muted-foreground space-y-2 mb-4 ml-4;
+  }
+
+  .doc-content li {
+    @apply leading-relaxed;
+  }
+
+  .doc-content blockquote {
+    @apply border-l-4 border-primary pl-4 italic text-muted-foreground;
+  }
+
+  .doc-content table {
+    @apply w-full border-collapse border border-border rounded-lg overflow-hidden;
+  }
+
+  .doc-content th {
+    @apply bg-muted text-foreground font-medium p-3 text-left border-b border-border;
+  }
+
+  .doc-content td {
+    @apply p-3 border-b border-border text-muted-foreground;
+  }
+
+  /* Link Styles */
+  .doc-content a {
+    @apply text-brand-primary hover:underline transition-colors duration-200;
+  }
+
+  .dark .doc-content a {
+    @apply text-white hover:text-gray-200;
+  }
+
+  /* Global link styles for dark theme */
+  .dark a {
+    @apply text-white;
+  }
+
+  /* Smooth Transitions */
+  .transition-smooth {
+    @apply transition-all duration-200 ease-in-out;
+  }
+}
