@@ -127,46 +127,47 @@ export const DocPageActions: React.FC<DocPageActionsProps> = ({
   };
 
   return (
-    <div className="flex items-center justify-end space-x-2 mb-6">
+    <div className="flex items-center justify-end space-x-2 mb-4 sm:mb-6">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="gap-2">
-            <FileText className="h-4 w-4" />
-            Page Actions
+          <Button variant="outline" size="sm" className="gap-1 sm:gap-2 text-xs sm:text-sm">
+            <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
+            <span className="hidden sm:inline">Page Actions</span>
+            <span className="sm:hidden">Actions</span>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-64 bg-background border border-border">
-          <DropdownMenuItem onClick={copyMarkdown} disabled={extracting} className="gap-2">
+        <DropdownMenuContent align="end" className="w-56 sm:w-64 bg-background border border-border">
+          <DropdownMenuItem onClick={copyMarkdown} disabled={extracting} className="gap-2 p-2 sm:p-3">
             {copied ? (
-              <Check className="h-4 w-4 text-success" />
+              <Check className="h-3 w-3 sm:h-4 sm:w-4 text-success flex-shrink-0" />
             ) : (
-              <Copy className="h-4 w-4" />
+              <Copy className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
             )}
-            <div className="flex flex-col">
-              <span>Copy Full Page Content</span>
+            <div className="flex flex-col min-w-0">
+              <span className="text-xs sm:text-sm font-medium">Copy Full Page Content</span>
               <span className="text-xs text-muted-foreground">
                 {extracting ? 'Extracting...' : 'Copy entire page as Markdown'}
               </span>
             </div>
           </DropdownMenuItem>
           
-          <DropdownMenuItem onClick={askChatGPT} disabled={extracting} className="gap-2">
-            <MessageSquare className="h-4 w-4" />
-            <div className="flex flex-col flex-1">
-              <span>Ask ChatGPT</span>
+          <DropdownMenuItem onClick={askChatGPT} disabled={extracting} className="gap-2 p-2 sm:p-3">
+            <MessageSquare className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+            <div className="flex flex-col flex-1 min-w-0">
+              <span className="text-xs sm:text-sm font-medium">Ask ChatGPT</span>
               <span className="text-xs text-muted-foreground">
                 {extracting ? 'Preparing...' : 'Copy content & open ChatGPT'}
               </span>
             </div>
-            <ExternalLink className="h-3 w-3" />
+            <ExternalLink className="h-3 w-3 flex-shrink-0" />
           </DropdownMenuItem>
           
           <DropdownMenuSeparator />
           
-          <DropdownMenuItem onClick={copyPageURL} className="gap-2">
-            <ExternalLink className="h-4 w-4" />
-            <div className="flex flex-col">
-              <span>Copy Page URL</span>
+          <DropdownMenuItem onClick={copyPageURL} className="gap-2 p-2 sm:p-3">
+            <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+            <div className="flex flex-col min-w-0">
+              <span className="text-xs sm:text-sm font-medium">Copy Page URL</span>
               <span className="text-xs text-muted-foreground">Share link to this page</span>
             </div>
           </DropdownMenuItem>

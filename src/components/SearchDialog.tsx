@@ -128,61 +128,61 @@ export const SearchDialog: React.FC<SearchDialogProps> = ({ open, onOpenChange }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-xs sm:max-w-lg md:max-w-2xl mx-4">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <DialogTitle className="flex items-center gap-2 text-sm sm:text-base">
             <Search className="h-4 w-4" />
             Search Documentation
           </DialogTitle>
         </DialogHeader>
         
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search for pages, APIs, concepts..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="pl-10"
+              className="pl-10 text-sm sm:text-base"
               autoFocus
             />
           </div>
 
           {query && results.length === 0 && (
-            <div className="text-center py-8 text-muted-foreground">
-              <Book className="h-8 w-8 mx-auto mb-2 opacity-50" />
-              <p>No results found for "{query}"</p>
+            <div className="text-center py-6 sm:py-8 text-muted-foreground">
+              <Book className="h-6 w-6 sm:h-8 sm:w-8 mx-auto mb-2 opacity-50" />
+              <p className="text-sm sm:text-base">No results found for "{query}"</p>
             </div>
           )}
 
           {results.length > 0 && (
-            <div className="space-y-2 max-h-96 overflow-y-auto">
+            <div className="space-y-1 sm:space-y-2 max-h-64 sm:max-h-96 overflow-y-auto">
               {results.map((result, index) => (
                 <div
                   key={index}
                   onClick={() => handleResultClick(result)}
-                  className="flex items-start gap-3 p-3 rounded-lg border border-border hover:bg-muted cursor-pointer transition-colors"
+                  className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg border border-border hover:bg-muted cursor-pointer transition-colors"
                 >
-                  <div className="mt-0.5">
+                  <div className="mt-0.5 flex-shrink-0">
                     {getIcon(result.type)}
                   </div>
                   
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <h4 className="font-medium truncate">{result.title}</h4>
-                      <Badge variant="secondary" className={`text-xs ${getTypeColor(result.type)}`}>
+                      <h4 className="font-medium truncate text-xs sm:text-sm">{result.title}</h4>
+                      <Badge variant="secondary" className={`text-xs ${getTypeColor(result.type)} hidden sm:inline-flex`}>
                         {result.type}
                       </Badge>
                     </div>
                     
                     {result.description && (
-                      <p className="text-sm text-muted-foreground line-clamp-1">
+                      <p className="text-xs sm:text-sm text-muted-foreground line-clamp-1 sm:line-clamp-2">
                         {result.description}
                       </p>
                     )}
                     
                     {result.category && (
-                      <p className="text-xs text-muted-foreground mt-1">
+                      <p className="text-xs text-muted-foreground mt-1 hidden sm:block">
                         {result.category}
                       </p>
                     )}
@@ -193,10 +193,10 @@ export const SearchDialog: React.FC<SearchDialogProps> = ({ open, onOpenChange }
           )}
 
           {!query && (
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               <div>
                 <h4 className="text-sm font-medium mb-2">Popular searches</h4>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1 sm:gap-2">
                   {['authentication', 'wallet deployment', 'token swap', 'biometric auth', 'starknet'].map((term) => (
                     <button
                       key={term}
@@ -209,7 +209,7 @@ export const SearchDialog: React.FC<SearchDialogProps> = ({ open, onOpenChange }
                 </div>
               </div>
               
-              <div className="text-xs text-muted-foreground">
+              <div className="text-xs text-muted-foreground hidden sm:block">
                 <kbd className="px-1.5 py-0.5 bg-muted border border-border rounded text-xs">⌘</kbd>
                 <kbd className="px-1.5 py-0.5 bg-muted border border-border rounded text-xs ml-1">K</kbd>
                 <span className="ml-2">to open search</span>

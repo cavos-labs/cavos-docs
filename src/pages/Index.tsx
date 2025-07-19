@@ -66,7 +66,7 @@ const Index = () => {
         </div>
 
         {/* Feature Cards */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        <div className="responsive-grid-3 section-spacing">
           <Card className="border-card-border hover:shadow-lg transition-shadow">
             <CardHeader>
               <div className="flex items-center space-x-2">

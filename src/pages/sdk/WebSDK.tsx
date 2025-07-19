@@ -53,7 +53,7 @@ const WebSDK = () => {
           wallet deployment, and AVNU paymaster for seamless user experiences.
         </p>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 my-8">
+        <div className="responsive-grid section-spacing">
           <Card className="text-center">
             <CardHeader>
               <Globe className="h-8 w-8 mx-auto text-brand-primary mb-2" />
