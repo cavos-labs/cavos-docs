@@ -28,7 +28,7 @@ export const DocHeader: React.FC = () => {
               className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg object-cover flex-shrink-0"
             />
             <span className="font-semibold text-sm sm:text-lg truncate">
-              <span className="hidden sm:inline">Cavos Service</span>
+              <span className="hidden sm:inline">Cavos Aegis-V1</span>
               <span className="sm:hidden">Cavos</span>
             </span>
           </div>
