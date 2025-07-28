@@ -11,12 +11,12 @@
     --background-secondary: 42 17% 88%;
     --background-elevated: 0 0% 100%;
     --foreground: 0 0% 0%;
-    
+
     /* Brand Colors - Cavos Service */
     --brand-primary: 0 0% 0%;
     --brand-secondary: 42 17% 91%;
     --brand-accent: 0 0% 20%;
-    
+
     /* Card System */
     --card: 0 0% 100%;
     --card-foreground: 0 0% 0%;
@@ -88,7 +88,7 @@
     --background-secondary: 0 0% 5%;
     --background-elevated: 0 0% 8%;
     --foreground: 42 17% 91%;
-    
+
     /* Dark Card System */
     --card: 0 0% 8%;
     --card-foreground: 42 17% 91%;
@@ -158,6 +158,194 @@
     @apply bg-muted text-foreground px-1.5 py-0.5 rounded text-sm font-mono;
   }
 
+  /* Simple CSS-based syntax highlighting */
+  .code-block .language-typescript,
+  .code-block .language-javascript,
+  .code-block .language-jsx,
+  .code-block .language-json {
+    color: #e5e7eb; /* gray-200 */
+  }
+
+  /* Keywords */
+  .code-block .language-typescript .keyword,
+  .code-block .language-javascript .keyword,
+  .code-block .language-jsx .keyword {
+    color: #8b5cf6; /* violet-500 */
+  }
+
+  /* Strings */
+  .code-block .language-typescript .string,
+  .code-block .language-javascript .string,
+  .code-block .language-jsx .string,
+  .code-block .language-json .string {
+    color: #10b981; /* emerald-500 */
+  }
+
+  /* Numbers */
+  .code-block .language-typescript .number,
+  .code-block .language-javascript .number,
+  .code-block .language-jsx .number,
+  .code-block .language-json .number {
+    color: #f59e0b; /* amber-500 */
+  }
+
+  /* Comments */
+  .code-block .language-typescript .comment,
+  .code-block .language-javascript .comment,
+  .code-block .language-jsx .comment {
+    color: #6b7280; /* gray-500 */
+  }
+
+  /* Functions */
+  .code-block .language-typescript .function,
+  .code-block .language-javascript .function,
+  .code-block .language-jsx .function {
+    color: #ef4444; /* red-500 */
+  }
+
+  /* Operators */
+  .code-block .language-typescript .operator,
+  .code-block .language-javascript .operator,
+  .code-block .language-jsx .operator {
+    color: #3b82f6; /* blue-500 */
+  }
+
+  /* Variables */
+  .code-block .language-typescript .variable,
+  .code-block .language-javascript .variable,
+  .code-block .language-jsx .variable {
+    color: #f97316; /* orange-500 */
+  }
+
+  /* Custom Syntax Highlighting Colors */
+  .code-block .token.comment,
+  .code-block .token.prolog,
+  .code-block .token.doctype,
+  .code-block .token.cdata {
+    color: #6b7280; /* gray-500 */
+  }
+
+  .code-block .token.punctuation {
+    color: #9ca3af; /* gray-400 */
+  }
+
+  .code-block .token.namespace {
+    opacity: 0.7;
+  }
+
+  .code-block .token.property,
+  .code-block .token.tag,
+  .code-block .token.boolean,
+  .code-block .token.number,
+  .code-block .token.constant,
+  .code-block .token.symbol,
+  .code-block .token.deleted {
+    color: #f59e0b; /* amber-500 */
+  }
+
+  .code-block .token.selector,
+  .code-block .token.attr-name,
+  .code-block .token.string,
+  .code-block .token.char,
+  .code-block .token.builtin,
+  .code-block .token.inserted {
+    color: #10b981; /* emerald-500 */
+  }
+
+  .code-block .token.operator,
+  .code-block .token.entity,
+  .code-block .token.url,
+  .code-block .language-css .token.string,
+  .code-block .style .token.string {
+    color: #3b82f6; /* blue-500 */
+  }
+
+  .code-block .token.atrule,
+  .code-block .token.attr-value,
+  .code-block .token.keyword {
+    color: #8b5cf6; /* violet-500 */
+  }
+
+  .code-block .token.function,
+  .code-block .token.class-name {
+    color: #ef4444; /* red-500 */
+  }
+
+  .code-block .token.regex,
+  .code-block .token.important,
+  .code-block .token.variable {
+    color: #f97316; /* orange-500 */
+  }
+
+  .code-block .token.important,
+  .code-block .token.bold {
+    font-weight: bold;
+  }
+
+  .code-block .token.italic {
+    font-style: italic;
+  }
+
+  .code-block .token.entity {
+    cursor: help;
+  }
+
+  /* Dark theme syntax highlighting */
+  .dark .code-block .token.comment,
+  .dark .code-block .token.prolog,
+  .dark .code-block .token.doctype,
+  .dark .code-block .token.cdata {
+    color: #9ca3af; /* gray-400 */
+  }
+
+  .dark .code-block .token.punctuation {
+    color: #d1d5db; /* gray-300 */
+  }
+
+  .dark .code-block .token.property,
+  .dark .code-block .token.tag,
+  .dark .code-block .token.boolean,
+  .dark .code-block .token.number,
+  .dark .code-block .token.constant,
+  .dark .code-block .token.symbol,
+  .dark .code-block .token.deleted {
+    color: #fbbf24; /* amber-400 */
+  }
+
+  .dark .code-block .token.selector,
+  .dark .code-block .token.attr-name,
+  .dark .code-block .token.string,
+  .dark .code-block .token.char,
+  .dark .code-block .token.builtin,
+  .dark .code-block .token.inserted {
+    color: #34d399; /* emerald-400 */
+  }
+
+  .dark .code-block .token.operator,
+  .dark .code-block .token.entity,
+  .dark .code-block .token.url,
+  .dark .code-block .language-css .token.string,
+  .dark .code-block .style .token.string {
+    color: #60a5fa; /* blue-400 */
+  }
+
+  .dark .code-block .token.atrule,
+  .dark .code-block .token.attr-value,
+  .dark .code-block .token.keyword {
+    color: #a78bfa; /* violet-400 */
+  }
+
+  .dark .code-block .token.function,
+  .dark .code-block .token.class-name {
+    color: #f87171; /* red-400 */
+  }
+
+  .dark .code-block .token.regex,
+  .dark .code-block .token.important,
+  .dark .code-block .token.variable {
+    color: #fb923c; /* orange-400 */
+  }
+
   /* Documentation Specific Styles */
   .doc-content h1 {
     @apply text-2xl sm:text-3xl font-bold text-foreground mb-4 sm:mb-6 pb-3 border-b border-border;
@@ -175,7 +363,8 @@
     @apply text-sm sm:text-base text-muted-foreground leading-relaxed mb-3 sm:mb-4;
   }
 
-  .doc-content ul, .doc-content ol {
+  .doc-content ul,
+  .doc-content ol {
     @apply text-sm sm:text-base text-muted-foreground space-y-1 sm:space-y-2 mb-3 sm:mb-4 ml-3 sm:ml-4;
   }
 
