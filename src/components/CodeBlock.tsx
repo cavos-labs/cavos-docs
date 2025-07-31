@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
-import { Copy, Check, Terminal } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useToast } from '@/hooks/use-toast';
+import React, { useState } from "react";
+import { Copy, Check, Terminal } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 interface CodeBlockProps {
   code: string;
@@ -13,10 +15,10 @@ interface CodeBlockProps {
 
 export const CodeBlock: React.FC<CodeBlockProps> = ({
   code,
-  language = 'text',
+  language = "text",
   filename,
   showLineNumbers = false,
-  className = ''
+  className = "",
 }) => {
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
@@ -39,15 +41,13 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
     }
   };
 
-  const lines = code.split('\n');
-
   return (
     <div className={`relative group ${className}`}>
       {/* Header */}
       {(filename || language) && (
         <div className="flex items-center justify-between bg-code-background border border-code-border border-b-0 rounded-t-lg px-4 py-2">
           <div className="flex items-center space-x-2">
-            {language === 'bash' || language === 'shell' ? (
+            {language === "bash" || language === "shell" ? (
               <Terminal className="h-4 w-4 text-code-comment" />
             ) : null}
             <span className="text-sm text-code-comment">
@@ -70,7 +70,9 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
       )}
 
       {/* Code Content */}
-      <div className={`code-block ${filename || language ? 'rounded-t-none' : ''} relative`}>
+      <div
+        className={`${filename || language ? "rounded-t-none" : ""} relative`}
+      >
         {!filename && !language && (
           <Button
             variant="ghost"
@@ -85,25 +87,38 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
             )}
           </Button>
         )}
-        
-        <pre className="overflow-x-auto">
-          <code className="block">
-            {showLineNumbers ? (
-              <div className="table w-full">
-                {lines.map((line, index) => (
-                  <div key={index} className="table-row">
-                    <span className="table-cell text-right pr-4 py-0 text-code-comment select-none w-12">
-                      {index + 1}
-                    </span>
-                    <span className="table-cell py-0">{line}</span>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              code
-            )}
-          </code>
-        </pre>
+
+        <SyntaxHighlighter
+          language={language}
+          style={oneDark}
+          showLineNumbers={showLineNumbers}
+          customStyle={{
+            margin: 0,
+            borderRadius: filename || language ? "0 0 0.5rem 0.5rem" : "0.5rem",
+            fontSize: "0.875rem",
+            lineHeight: "1.5",
+            background: "#1f2937",
+            border: "1px solid hsl(var(--code-border))",
+            borderTop:
+              filename || language
+                ? "none"
+                : "1px solid hsl(var(--code-border))",
+          }}
+          lineNumberStyle={{
+            color: "#6b7280",
+            marginRight: "1rem",
+            minWidth: "2rem",
+            userSelect: "none",
+          }}
+          codeTagProps={{
+            style: {
+              background: "#1f2937",
+              color: "#e5e7eb",
+            },
+          }}
+        >
+          {code}
+        </SyntaxHighlighter>
       </div>
     </div>
   );
@@ -119,27 +134,27 @@ interface TerminalBlockProps {
 export const TerminalBlock: React.FC<TerminalBlockProps> = ({
   command,
   output,
-  className = ''
+  className = "",
 }) => {
   return (
-    <div className={`bg-code-background border border-code-border rounded-lg overflow-hidden ${className}`}>
+    <div
+      className={`bg-code-background border border-code-border rounded-lg overflow-hidden ${className}`}
+    >
       <div className="flex items-center justify-between bg-code-background border-b border-code-border px-4 py-2">
         <div className="flex items-center space-x-2">
           <Terminal className="h-4 w-4 text-code-comment" />
           <span className="text-sm text-code-comment">Terminal</span>
         </div>
       </div>
-      
+
       <div className="p-4 font-mono text-sm">
         <div className="flex items-center space-x-2 mb-2">
-          <span className="text-success">$</span>
+          <span className="text-emerald-500 font-bold">$</span>
           <span className="text-code-foreground">{command}</span>
         </div>
-        
+
         {output && (
-          <div className="text-code-comment whitespace-pre-wrap">
-            {output}
-          </div>
+          <div className="text-code-comment whitespace-pre-wrap">{output}</div>
         )}
       </div>
     </div>
