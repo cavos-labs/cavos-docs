@@ -11,6 +11,9 @@ import {
   Zap,
   Shield,
   Wallet,
+  ArrowUpDown,
+  Lock,
+  AlertCircle,
   ChevronRight
 } from 'lucide-react';
 import {
@@ -37,17 +40,18 @@ const navigationItems = [
     ]
   },
   {
-    title: "Authentication",
+    title: "Implementation Guides", 
     items: [
+      { title: "Authentication Flow", url: "/guides/authentication", icon: Lock },
+      { title: "Token Swapping", url: "/guides/token-swapping", icon: ArrowUpDown },
       { title: "Organization Setup", url: "https://services.cavos.xyz", icon: Settings, external: true },
-      { title: "Authentication Guide", url: "/auth/overview", icon: Shield },
     ]
   },
   {
     title: "SDKs",
     items: [
-      { title: "Web SDK", url: "/sdk/web", icon: Globe },
-      { title: "React Native SDK", url: "/sdk/native", icon: Smartphone },
+      { title: "Web SDK (v1.2.32)", url: "/sdk/web", icon: Globe },
+      { title: "React Native SDK (v1.3.3)", url: "/sdk/native", icon: Smartphone },
     ]
   },
   {
