@@ -348,19 +348,19 @@
 
   /* Documentation Specific Styles */
   .doc-content h1 {
-    @apply text-2xl sm:text-3xl font-bold text-foreground mb-4 sm:mb-6 pb-3 border-b border-border;
+    @apply text-2xl sm:text-3xl font-bold text-foreground mb-6 sm:mb-8 pb-4 border-b-2 border-border;
   }
 
   .doc-content h2 {
-    @apply text-xl sm:text-2xl font-semibold text-foreground mt-6 sm:mt-8 mb-3 sm:mb-4;
+    @apply text-xl sm:text-2xl font-semibold text-foreground mt-12 mb-6 pb-2 border-b border-border/50;
   }
 
   .doc-content h3 {
-    @apply text-lg sm:text-xl font-medium text-foreground mt-4 sm:mt-6 mb-2 sm:mb-3;
+    @apply text-lg sm:text-xl font-medium text-foreground mt-8 mb-4;
   }
 
   .doc-content p {
-    @apply text-sm sm:text-base text-muted-foreground leading-relaxed mb-3 sm:mb-4;
+    @apply text-base text-muted-foreground leading-relaxed mb-6;
   }
 
   .doc-content ul,
@@ -440,5 +440,215 @@
   /* Smooth Transitions */
   .transition-smooth {
     @apply transition-all duration-200 ease-in-out;
+  }
+
+  /* Enhanced UX Styles */
+  .doc-card-hover {
+    @apply transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-brand-primary/5;
+  }
+
+  .doc-badge-glow {
+    @apply relative overflow-hidden;
+  }
+
+  .doc-badge-glow::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] animate-shimmer;
+  }
+
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s ease-in-out infinite;
+  }
+
+  /* Enhanced Button States */
+  .btn-primary {
+    @apply bg-brand-primary text-brand-primary-foreground hover:bg-brand-primary-hover transform hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary-hover transform hover:scale-105 transition-all duration-200;
+  }
+
+  /* Loading States */
+  .loading-pulse {
+    @apply animate-pulse bg-gradient-to-r from-muted via-muted-foreground/20 to-muted;
+  }
+
+  /* Interactive Elements */
+  .interactive-hover {
+    @apply transform transition-all duration-200 hover:scale-105 hover:shadow-md cursor-pointer;
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-brand-primary to-brand-accent bg-clip-text text-transparent;
+  }
+
+  /* Enhanced Typography */
+  .text-hero {
+    @apply text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight tracking-tight;
+  }
+
+  .text-large {
+    @apply text-xl sm:text-2xl font-semibold leading-relaxed;
+  }
+
+  /* Card Enhancements */
+  .card-enhanced {
+    @apply bg-card/80 backdrop-blur-sm border border-border/50 rounded-xl shadow-sm hover:shadow-md hover:border-border transition-all duration-300;
+  }
+
+  .card-featured {
+    @apply bg-gradient-to-br from-card via-card to-card/90 border-2 border-brand-primary/20 rounded-xl shadow-lg hover:shadow-xl hover:border-brand-primary/40 transition-all duration-300;
+  }
+
+  /* Enhanced Code Blocks */
+  .code-enhanced {
+    @apply relative overflow-hidden rounded-xl border border-code-border/50 shadow-sm hover:shadow-md transition-all duration-300;
+  }
+
+  .code-enhanced::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-brand-primary/5 to-transparent opacity-0 transition-opacity duration-300;
+  }
+
+  .code-enhanced:hover::before {
+    @apply opacity-100;
+  }
+
+  /* Better Focus States */
+  .focus-enhanced {
+    @apply focus:outline-none focus:ring-2 focus:ring-brand-primary/50 focus:ring-offset-2 focus:ring-offset-background;
+  }
+
+  /* Responsive Improvements */
+  .container-enhanced {
+    @apply mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl;
+  }
+
+  .grid-enhanced {
+    @apply grid gap-4 sm:gap-6 lg:gap-8;
+  }
+
+  /* Animation Classes */
+  .fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+
+  .slide-up {
+    animation: slideUp 0.8s ease-out forwards;
+  }
+
+  .stagger-children > * {
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+
+  .stagger-children > *:nth-child(1) { animation-delay: 0.1s; }
+  .stagger-children > *:nth-child(2) { animation-delay: 0.2s; }
+  .stagger-children > *:nth-child(3) { animation-delay: 0.3s; }
+  .stagger-children > *:nth-child(4) { animation-delay: 0.4s; }
+  .stagger-children > *:nth-child(5) { animation-delay: 0.5s; }
+
+  @keyframes fadeIn {
+    from { 
+      opacity: 0; 
+      transform: translateY(20px); 
+    }
+    to { 
+      opacity: 1; 
+      transform: translateY(0); 
+    }
+  }
+
+  @keyframes slideUp {
+    from { 
+      opacity: 0; 
+      transform: translateY(40px); 
+    }
+    to { 
+      opacity: 1; 
+      transform: translateY(0); 
+    }
+  }
+
+  /* Better Scrollbar */
+  .scrollbar-enhanced {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted)) hsl(var(--background));
+  }
+
+  .scrollbar-enhanced::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .scrollbar-enhanced::-webkit-scrollbar-track {
+    background: hsl(var(--background));
+    border-radius: 4px;
+  }
+
+  .scrollbar-enhanced::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted));
+    border-radius: 4px;
+    border: 2px solid hsl(var(--background));
+  }
+
+  .scrollbar-enhanced::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground));
+  }
+
+  /* Documentation specific enhancements */
+  .doc-content {
+    @apply scrollbar-enhanced;
+  }
+
+  .doc-content .card-enhanced {
+    @apply doc-card-hover;
+  }
+
+  .doc-content .badge {
+    @apply doc-badge-glow;
+  }
+
+  /* Clean UI improvements */
+  .doc-content {
+    @apply leading-relaxed;
+    line-height: 1.7;
+  }
+
+  .doc-content .card {
+    @apply transition-all duration-200 hover:shadow-md;
+  }
+
+  .doc-content .alert {
+    @apply my-6;
+  }
+
+  /* Better code block spacing */
+  .doc-content pre {
+    @apply my-6;
+  }
+
+  /* Improved link styling */
+  .doc-content a {
+    @apply font-medium transition-colors duration-200;
+  }
+
+  /* Better list styling */
+  .doc-content ul {
+    @apply space-y-2 mb-6;
+  }
+
+  .doc-content li {
+    @apply leading-relaxed;
+  }
+
+  /* Enhanced section spacing */
+  .doc-content section {
+    @apply mb-12;
   }
 }

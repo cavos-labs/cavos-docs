@@ -42,28 +42,43 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
   };
 
   return (
-    <div className={`relative group ${className}`}>
+    <div className={`relative group code-enhanced ${className}`}>
       {/* Header */}
       {(filename || language) && (
-        <div className="flex items-center justify-between bg-code-background border border-code-border border-b-0 rounded-t-lg px-4 py-2">
-          <div className="flex items-center space-x-2">
-            {language === "bash" || language === "shell" ? (
-              <Terminal className="h-4 w-4 text-code-comment" />
-            ) : null}
-            <span className="text-sm text-code-comment">
-              {filename || language}
-            </span>
+        <div className="flex items-center justify-between bg-code-background/90 backdrop-blur-sm border border-code-border border-b-0 rounded-t-xl px-4 py-3">
+          <div className="flex items-center space-x-3">
+            {/* Traffic light dots for macOS style */}
+            <div className="flex items-center space-x-1.5">
+              <div className="w-2.5 h-2.5 rounded-full bg-red-500 opacity-60" />
+              <div className="w-2.5 h-2.5 rounded-full bg-yellow-500 opacity-60" />
+              <div className="w-2.5 h-2.5 rounded-full bg-green-500 opacity-60" />
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              {language === "bash" || language === "shell" ? (
+                <Terminal className="h-4 w-4 text-emerald-400" />
+              ) : (
+                <div className="w-4 h-4 rounded bg-brand-primary/20 flex items-center justify-center">
+                  <span className="text-xs font-mono text-brand-primary">
+                    {language?.slice(0, 2).toUpperCase() || "CODE"}
+                  </span>
+                </div>
+              )}
+              <span className="text-sm text-code-comment font-medium">
+                {filename || language}
+              </span>
+            </div>
           </div>
           <Button
             variant="ghost"
             size="sm"
             onClick={copyCode}
-            className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+            className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-white/10 focus-enhanced"
           >
             {copied ? (
-              <Check className="h-4 w-4 text-success" />
+              <Check className="h-4 w-4 text-emerald-400 animate-in zoom-in-50 duration-200" />
             ) : (
-              <Copy className="h-4 w-4" />
+              <Copy className="h-4 w-4 text-code-comment hover:text-code-foreground transition-colors" />
             )}
           </Button>
         </div>
@@ -94,26 +109,31 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
           showLineNumbers={showLineNumbers}
           customStyle={{
             margin: 0,
-            borderRadius: filename || language ? "0 0 0.5rem 0.5rem" : "0.5rem",
+            borderRadius: filename || language ? "0 0 0.75rem 0.75rem" : "0.75rem",
             fontSize: "0.875rem",
-            lineHeight: "1.5",
-            background: "#1f2937",
+            lineHeight: "1.6",
+            background: "linear-gradient(135deg, #1f2937 0%, #1e293b 100%)",
             border: "1px solid hsl(var(--code-border))",
             borderTop:
               filename || language
                 ? "none"
                 : "1px solid hsl(var(--code-border))",
+            padding: "1.5rem",
+            fontFamily: "ui-monospace, SFMono-Regular, 'SF Mono', Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
           }}
           lineNumberStyle={{
             color: "#6b7280",
-            marginRight: "1rem",
-            minWidth: "2rem",
+            marginRight: "1.5rem",
+            minWidth: "2.5rem",
             userSelect: "none",
+            borderRight: "1px solid #374151",
+            paddingRight: "1rem",
           }}
           codeTagProps={{
             style: {
-              background: "#1f2937",
+              background: "transparent",
               color: "#e5e7eb",
+              fontWeight: "400",
             },
           }}
         >
@@ -138,23 +158,34 @@ export const TerminalBlock: React.FC<TerminalBlockProps> = ({
 }) => {
   return (
     <div
-      className={`bg-code-background border border-code-border rounded-lg overflow-hidden ${className}`}
+      className={`bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 ${className}`}
     >
-      <div className="flex items-center justify-between bg-code-background border-b border-code-border px-4 py-2">
-        <div className="flex items-center space-x-2">
-          <Terminal className="h-4 w-4 text-code-comment" />
-          <span className="text-sm text-code-comment">Terminal</span>
+      <div className="flex items-center justify-between bg-slate-800/80 backdrop-blur-sm border-b border-slate-700 px-4 py-3">
+        <div className="flex items-center space-x-3">
+          {/* Traffic light dots */}
+          <div className="flex items-center space-x-1.5">
+            <div className="w-2.5 h-2.5 rounded-full bg-red-500 opacity-80" />
+            <div className="w-2.5 h-2.5 rounded-full bg-yellow-500 opacity-80" />
+            <div className="w-2.5 h-2.5 rounded-full bg-green-500 opacity-80" />
+          </div>
+          
+          <div className="flex items-center space-x-2">
+            <Terminal className="h-4 w-4 text-emerald-400" />
+            <span className="text-sm text-slate-300 font-medium">Terminal</span>
+          </div>
         </div>
       </div>
 
-      <div className="p-4 font-mono text-sm">
-        <div className="flex items-center space-x-2 mb-2">
-          <span className="text-emerald-500 font-bold">$</span>
-          <span className="text-code-foreground">{command}</span>
+      <div className="p-6 font-mono text-sm">
+        <div className="flex items-start space-x-3 mb-3">
+          <span className="text-emerald-400 font-bold text-lg leading-none">$</span>
+          <span className="text-slate-100 font-medium leading-relaxed">{command}</span>
         </div>
 
         {output && (
-          <div className="text-code-comment whitespace-pre-wrap">{output}</div>
+          <div className="text-slate-400 whitespace-pre-wrap pl-6 border-l-2 border-slate-600/50 ml-1 leading-relaxed">
+            {output}
+          </div>
         )}
       </div>
     </div>

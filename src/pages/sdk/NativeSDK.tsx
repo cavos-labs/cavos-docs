@@ -51,6 +51,18 @@ const NativeSDK = () => {
 
         <h1>React Native SDK</h1>
 
+        <div className="flex items-center space-x-2 mb-6">
+          <Badge
+            variant="secondary"
+            className="bg-brand-primary/10 text-brand-primary"
+          >
+            v1.3.3
+          </Badge>
+          <Badge variant="outline">React Native</Badge>
+          <Badge variant="outline">Expo</Badge>
+          <Badge variant="outline">Biometric Auth</Badge>
+        </div>
+
         <p>
           The Cavos Service React Native SDK provides seamless Starknet wallet
           integration for mobile applications. Built with Expo modules and
@@ -1504,6 +1516,328 @@ EXPO_PUBLIC_APP_SCHEME=yourapp
 # Network configuration (optional)
 EXPO_PUBLIC_DEFAULT_NETWORK=sepolia`}
         />
+
+        <h2>Token Swapping</h2>
+
+        <p>
+          The React Native SDK includes built-in token swapping functionality 
+          powered by AVNU DEX aggregator with complete gas fee abstraction and 
+          optional biometric authentication.
+        </p>
+
+        <div className="flex items-center space-x-2 mb-6">
+          <Badge variant="outline" className="bg-brand-primary/10 text-brand-primary">
+            AVNU Powered
+          </Badge>
+          <Badge variant="outline">Gasless</Badge>
+          <Badge variant="outline">5% Slippage Protection</Badge>
+        </div>
+
+        <Alert className="my-6">
+          <Info className="h-4 w-4" />
+          <AlertDescription>
+            <strong>Exclusive Feature:</strong> Token swapping is currently only 
+            available in the React Native SDK. See the{" "}
+            <a href="/guides/token-swapping" className="text-brand-primary hover:underline">
+              complete Token Swapping Guide
+            </a>{" "}
+            for detailed implementation examples.
+          </AlertDescription>
+        </Alert>
+
+        <Tabs defaultValue="basic-swap" className="my-6">
+          <TabsList>
+            <TabsTrigger value="basic-swap">Basic Swap</TabsTrigger>
+            <TabsTrigger value="biometric-swap">Secure Swap</TabsTrigger>
+            <TabsTrigger value="swap-component">Swap Component</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="basic-swap">
+            <CodeBlock
+              language="typescript"
+              filename="TokenSwap.tsx"
+              code={`import { CavosWallet } from 'cavos-service-native';
+
+// Initialize wallet (from successful authentication)
+const cavosWallet = new CavosWallet(/* ... authentication data ... */);
+
+// Simple token swap without biometric auth
+const swapTokens = async () => {
+  try {
+    const result = await cavosWallet.swap(
+      1000000000000000000, // 1 token (18 decimals)
+      '0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d', // STRK
+      '0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8', // ETH
+      false // No biometric authentication
+    );
+    
+    console.log('Swap successful!');
+    console.log('Transaction hash:', result);
+    return result;
+  } catch (error) {
+    console.error('Swap failed:', error.message);
+    throw error;
+  }
+};`}
+            />
+          </TabsContent>
+
+          <TabsContent value="biometric-swap">
+            <CodeBlock
+              language="typescript"
+              filename="SecureSwap.tsx"
+              code={`import { Alert } from 'react-native';
+import { CavosWallet } from 'cavos-service-native';
+
+// Secure swap with biometric authentication
+const secureSwap = async (
+  amount: number,
+  sellTokenAddress: string,
+  buyTokenAddress: string
+) => {
+  try {
+    const result = await cavosWallet.swap(
+      amount,
+      sellTokenAddress,
+      buyTokenAddress,
+      true // Require biometric authentication
+    );
+    
+    Alert.alert(
+      'Swap Successful',
+      \`Transaction completed: \${result}\`
+    );
+    
+    return result;
+  } catch (error) {
+    let errorMessage = 'Swap failed';
+    
+    if (error.message.includes('biometric')) {
+      errorMessage = 'Biometric authentication failed or cancelled';
+    } else if (error.message.includes('insufficient')) {
+      errorMessage = 'Insufficient token balance';
+    } else if (error.message.includes('slippage')) {
+      errorMessage = 'Price impact too high, try again';
+    }
+    
+    Alert.alert('Error', errorMessage);
+    throw error;
+  }
+};
+
+// Usage example
+const handleSwap = () => {
+  secureSwap(
+    5000000000000000000, // 5 tokens
+    '0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8', // ETH
+    '0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d'  // STRK
+  );
+};`}
+            />
+          </TabsContent>
+
+          <TabsContent value="swap-component">
+            <CodeBlock
+              language="typescript"
+              filename="SwapScreen.tsx"
+              code={`import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  StyleSheet,
+  ActivityIndicator
+} from 'react-native';
+import { CavosWallet } from 'cavos-service-native';
+
+interface SwapScreenProps {
+  wallet: CavosWallet;
+}
+
+export const SwapScreen: React.FC<SwapScreenProps> = ({ wallet }) => {
+  const [amount, setAmount] = useState('');
+  const [loading, setLoading] = useState(false);
+  
+  // Common token addresses (Sepolia testnet)
+  const STRK_ADDRESS = '0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d';
+  const ETH_ADDRESS = '0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8';
+
+  const handleSwap = async () => {
+    if (!amount || isNaN(Number(amount))) {
+      Alert.alert('Error', 'Please enter a valid amount');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Convert to wei (18 decimals)
+      const amountWei = (Number(amount) * Math.pow(10, 18));
+      
+      const result = await wallet.swap(
+        amountWei,
+        STRK_ADDRESS, // Sell STRK
+        ETH_ADDRESS,  // Buy ETH
+        true // Require biometric auth
+      );
+
+      Alert.alert(
+        'Swap Successful!',
+        \`Transaction: \${result}\`,
+        [{ text: 'OK', onPress: () => setAmount('') }]
+      );
+    } catch (error) {
+      Alert.alert('Swap Failed', error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Token Swap</Text>
+      <Text style={styles.subtitle}>STRK → ETH</Text>
+      
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Amount (STRK)</Text>
+        <TextInput
+          style={styles.input}
+          value={amount}
+          onChangeText={setAmount}
+          placeholder="Enter amount to swap"
+          keyboardType="numeric"
+          editable={!loading}
+        />
+      </View>
+
+      <TouchableOpacity
+        style={[styles.button, loading && styles.buttonDisabled]}
+        onPress={handleSwap}
+        disabled={loading}
+      >
+        {loading ? (
+          <ActivityIndicator color="white" />
+        ) : (
+          <Text style={styles.buttonText}>Swap Tokens</Text>
+        )}
+      </TouchableOpacity>
+
+      <View style={styles.infoContainer}>
+        <Text style={styles.infoText}>
+          • Gasless transaction via AVNU paymaster
+        </Text>
+        <Text style={styles.infoText}>
+          • 5% slippage protection included
+        </Text>
+        <Text style={styles.infoText}>
+          • Biometric authentication required
+        </Text>
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: 'white',
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 30,
+    textAlign: 'center',
+  },
+  inputContainer: {
+    marginBottom: 20,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: '500',
+    marginBottom: 8,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+  },
+  button: {
+    backgroundColor: '#007AFF',
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  buttonDisabled: {
+    backgroundColor: '#ccc',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  infoContainer: {
+    backgroundColor: '#f8f9fa',
+    padding: 16,
+    borderRadius: 8,
+  },
+  infoText: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 4,
+  },
+});`}
+            />
+          </TabsContent>
+        </Tabs>
+
+        <Card className="my-6">
+          <CardHeader>
+            <CardTitle className="text-lg">Swap Method Reference</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <CodeBlock
+              language="typescript"
+              code={`/**
+ * Swap tokens using AVNU DEX aggregator
+ * @param amount - Amount to swap in base units (wei)
+ * @param sellTokenAddress - Contract address of token to sell
+ * @param buyTokenAddress - Contract address of token to buy  
+ * @param bioAuth - Require biometric authentication (default: false)
+ * @returns Promise<string> - Transaction hash
+ */
+public async swap(
+  amount: number,
+  sellTokenAddress: string,
+  buyTokenAddress: string,
+  bioAuth: boolean = false
+): Promise<string>`}
+            />
+            
+            <div className="mt-4 space-y-2 text-sm">
+              <p><strong>Parameters:</strong></p>
+              <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                <li><code>amount</code>: Token amount in base units (e.g., wei for 18 decimal tokens)</li>
+                <li><code>sellTokenAddress</code>: Contract address of the token being sold</li>
+                <li><code>buyTokenAddress</code>: Contract address of the token being purchased</li>
+                <li><code>bioAuth</code>: Optional biometric authentication requirement</li>
+              </ul>
+              
+              <p className="mt-3"><strong>Returns:</strong></p>
+              <p className="text-muted-foreground">Transaction hash string on success, throws error on failure</p>
+            </div>
+          </CardContent>
+        </Card>
 
         <h2>Troubleshooting</h2>
 
