@@ -24,6 +24,7 @@ import {
   Mail,
   Clock
 } from "lucide-react";
+import { SignInButtonExample } from "@/components/SignInButtonExample";
 
 const pageContent = `
 Cavos Service authentication uses a sophisticated JWT token system with Auth0 integration, automatic token rotation, and organization-based isolation. Supports Apple Sign In, Google OAuth, and email/password authentication with automatic wallet deployment.
@@ -173,6 +174,23 @@ const Authentication = () => {
               </CardDescription>
             </CardHeader>
           </Card>
+        </div>
+
+        {/* Interactive Button Examples */}
+        <h3 className="text-lg font-medium mb-4">Interactive Examples</h3>
+        
+        <div className="space-y-6 my-8">
+          <SignInButtonExample
+            type="apple"
+            title="Apple Sign In"
+            description="Interactive Apple Sign In button using the Cavos SDK. Click to see how it works in your application."
+          />
+          
+          <SignInButtonExample
+            type="google"
+            title="Google Sign In"
+            description="Interactive Google Sign In button using the Cavos SDK. Experience the authentication flow firsthand."
+          />
         </div>
 
         <Tabs defaultValue="web-sdk" className="my-6">
