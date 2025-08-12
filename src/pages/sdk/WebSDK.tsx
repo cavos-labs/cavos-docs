@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Globe, Code, Layers, Zap, Info } from "lucide-react";
+import { SignInButtonExample } from "@/components/SignInButtonExample";
 
 const pageContent = `
 The Cavos Service Web SDK provides a complete Starknet wallet infrastructure solution for web applications. Built with TypeScript and optimized for modern web frameworks with automatic wallet deployment and gas fee abstraction.
@@ -569,6 +570,96 @@ app.listen(3000, () => {
             </div>
           </TabsContent>
         </Tabs>
+
+        {/* Social Authentication */}
+        <h2>Social Authentication</h2>
+        
+        <p>
+          The Cavos SDK provides ready-to-use React components for social authentication 
+          with Apple and Google, handling the complete OAuth flow with automatic wallet deployment.
+        </p>
+
+        {/* Interactive Examples */}
+        <div className="space-y-6 my-8">
+          <SignInButtonExample
+            type="apple"
+            title="Apple Sign In Component"
+            description="React component for Apple authentication. Handles the complete OAuth flow and returns authenticated user data."
+          />
+          
+          <SignInButtonExample
+            type="google"
+            title="Google Sign In Component"
+            description="React component for Google authentication. Integrates with Google OAuth and provides seamless user experience."
+          />
+        </div>
+
+        <h3 className="text-lg font-medium mb-4">Implementation Guide</h3>
+        
+        <CodeBlock
+          language="typescript"
+          filename="SocialAuth.tsx"
+          code={`import React from 'react';
+import { SignInWithApple, SignInWithGoogle } from 'cavos-service-sdk';
+
+const AuthComponent = () => {
+  const handleAuthCallback = () => {
+    // Extract authentication data from URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const accessToken = urlParams.get('access_token');
+    const userData = urlParams.get('user');
+    
+    if (accessToken && userData) {
+      // Authentication successful
+      const user = JSON.parse(decodeURIComponent(userData));
+      console.log('User authenticated:', user);
+      
+      // Store tokens securely
+      localStorage.setItem('cavos_access_token', accessToken);
+      localStorage.setItem('cavos_user', JSON.stringify(user));
+      
+      // Redirect to your app's main interface
+      window.location.href = '/dashboard';
+    }
+  };
+
+  // Call this on your callback page
+  React.useEffect(() => {
+    handleAuthCallback();
+  }, []);
+
+  return (
+    <div className="auth-container">
+      <h2>Sign in to your account</h2>
+      
+      {/* Apple Sign In */}
+      <SignInWithApple
+        appId={process.env.REACT_APP_CAVOS_APP_ID}
+        network="sepolia"
+        finalRedirectUri="https://yourapp.com/auth/callback"
+      />
+      
+      {/* Google Sign In */}
+      <SignInWithGoogle
+        appId={process.env.REACT_APP_CAVOS_APP_ID}
+        network="sepolia"
+        finalRedirectUri="https://yourapp.com/auth/callback"
+      />
+    </div>
+  );
+};
+
+export default AuthComponent;`}
+        />
+
+        <Alert className="my-6">
+          <Info className="h-4 w-4" />
+          <AlertDescription>
+            <strong>Callback Handling:</strong> The social authentication flow redirects 
+            users to your <code>finalRedirectUri</code> with authentication data as URL parameters. 
+            Make sure to handle this data on your callback page.
+          </AlertDescription>
+        </Alert>
 
         <h2>Configuration Options</h2>
 
