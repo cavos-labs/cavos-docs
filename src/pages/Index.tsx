@@ -47,10 +47,6 @@ const Index = () => {
             <a href="/quick-start">Quick Start</a> - 5-minute setup guide
           </li>
           <li>
-            <a href="/installation">Installation</a> - SDK installation for all
-            platforms
-          </li>
-          <li>
             <a href="/sdk/web">Web SDK</a> - Complete API reference
           </li>
           <li>

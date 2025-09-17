@@ -9,7 +9,6 @@ import { ScrollToTop } from "@/components/ScrollToTop";
 // Documentation Pages
 import Index from "./pages/Index";
 import QuickStart from "./pages/QuickStart";
-import Installation from "./pages/Installation";
 import AuthOverview from "./pages/auth/Overview";
 import WebSDK from "./pages/sdk/WebSDK";
 import NativeSDK from "./pages/sdk/NativeSDK";
@@ -31,7 +30,6 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/quick-start" element={<QuickStart />} />
-            <Route path="/installation" element={<Installation />} />
             <Route path="/auth/overview" element={<AuthOverview />} />
             <Route path="/sdk/web" element={<WebSDK />} />
             <Route path="/sdk/native" element={<NativeSDK />} />

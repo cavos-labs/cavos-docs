@@ -7,7 +7,6 @@ import {
   Code,
   Smartphone,
   Globe,
-  Settings,
   Zap,
   Shield,
   Wallet,
@@ -40,7 +39,6 @@ const navigationItems = [
     items: [
       { title: "Home", url: "/", icon: Home },
       { title: "Quick Start", url: "/quick-start", icon: Zap },
-      { title: "Installation", url: "/installation", icon: Settings },
     ],
   },
   {
