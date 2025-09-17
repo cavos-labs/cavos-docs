@@ -113,856 +113,260 @@ const WebSDK = () => {
             >
               https://services.cavos.xyz/
             </a>{" "}
-            to get your App ID and Organization Secret. App ID is safe for frontend use, Organization Secret is for backend only.
+            to get your App ID and Organization Secret for client-side use.
           </AlertDescription>
         </Alert>
 
         <h2>Basic Usage</h2>
 
-        <Tabs defaultValue="vanilla" className="my-6">
-          <TabsList>
-            <TabsTrigger value="vanilla">Vanilla JS</TabsTrigger>
-            <TabsTrigger value="react">React</TabsTrigger>
-            <TabsTrigger value="node">Node.js</TabsTrigger>
-          </TabsList>
+        <p>Simple React examples to get you started quickly:</p>
 
-          <TabsContent value="vanilla">
-            <CodeBlock
-              language="typescript"
-              filename="main.ts"
-              code={`import { CavosAuth, formatAmount, getBalanceOf, executeCalls, deployWallet } from 'cavos-service-sdk';
+        <h3>1. User Registration</h3>
+        <CodeBlock
+          language="typescript"
+          filename="Register.tsx"
+          code={`import React, { useState } from 'react';
+import { CavosAuth } from 'cavos-service-sdk';
 
-// Initialize CavosAuth instance
-const cavosAuth = new CavosAuth('sepolia', 'your-app-id'); // network, app_id
+const cavosAuth = new CavosAuth('sepolia', 'your-app-id');
 
-// Register new user with automatic wallet deployment
-async function registerUser() {
-  try {
-    const result = await cavosAuth.signUp(
-      'user@example.com',
-      'SecurePassword123!',
-      'your-org-secret' // From https://services.cavos.xyz
-    );
-    
-    console.log('User registered:', result.user);
-    console.log('Wallet deployed:', result.wallet.address);
-    console.log('Auth0 user_id:', result.user_id);
-  } catch (error) {
-    console.error('Registration failed:', error);
-  }
-}
-
-// Login existing user
-async function loginUser() {
-  try {
-    const result = await cavosAuth.signIn(
-      'user@example.com',
-      'SecurePassword123!',
-      'your-org-secret'
-    );
-    
-    console.log('User logged in:', result.user);
-    console.log('Wallet:', result.wallet.address);
-    console.log('Access token:', result.access_token);
-    
-    // Store tokens securely
-    localStorage.setItem('accessToken', result.access_token);
-    localStorage.setItem('refreshToken', result.refresh_token);
-  } catch (error) {
-    console.error('Login failed:', error);
-  }
-}
-
-// Refresh expired token
-async function refreshUserToken() {
-  const refreshToken = localStorage.getItem('refreshToken');
-  
-  try {
-    const result = await cavosAuth.refreshToken(
-      refreshToken!,
-      'sepolia' // network
-    );
-    
-    console.log('Token refreshed:', result.access_token);
-    localStorage.setItem('accessToken', result.access_token);
-    localStorage.setItem('refreshToken', result.refresh_token);
-  } catch (error) {
-    console.error('Token refresh failed:', error);
-  }
-}
-
-// Execute transaction using instance method (session-based)
-async function sendTransaction() {
-  const accessToken = localStorage.getItem('accessToken');
-  const walletAddress = localStorage.getItem('walletAddress');
-  
-  try {
-    const result = await cavosAuth.executeCalls(
-      walletAddress!,
-      [{
-        contractAddress: '0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d',
-        entrypoint: 'transfer',
-        calldata: [
-          '0x123...', // recipient
-          '1000000000000000000', // amount
-          '0' // high part
-        ]
-      }],
-      accessToken!
-    );
-    
-    console.log('Transaction sent:', result.txHash);
-    console.log('New access token:', result.accessToken); // Automatically refreshed
-  } catch (error) {
-    console.error('Transaction failed:', error);
-  }
-}
-
-// Get token balance
-async function getTokenBalance() {
-  try {
-    const balance = await getBalanceOf(
-      '0x456...', // wallet address
-      '0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d', // STRK token
-      '18', // decimals
-      'your-api-key'
-    );
-    
-    console.log('Token balance:', balance);
-  } catch (error) {
-    console.error('Balance check failed:', error);
-  }
-}
-
-// Format amount for Starknet
-async function formatTokenAmount() {
-  try {
-    const formatted = await formatAmount('1000000000000000000', 18);
-    console.log('Formatted amount:', formatted);
-  } catch (error) {
-    console.error('Format failed:', error);
-  }
-}`}
-            />
-          </TabsContent>
-
-          <TabsContent value="react">
-            <div className="space-y-4">
-              <CodeBlock
-                language="typescript"
-                filename="App.tsx"
-                code={`import React, { useState } from 'react';
-import { CavosAuth, executeCalls, getBalanceOf } from 'cavos-service-sdk';
-
-// Initialize CavosAuth instance
-const cavosAuth = new CavosAuth('sepolia', process.env.REACT_APP_CAVOS_APP_ID!);
-
-function App() {
-  const [user, setUser] = useState(null);
-  const [wallet, setWallet] = useState(null);
+function Register() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleRegister = async () => {
+  const handleRegister = async (e) => {
+    e.preventDefault();
     setLoading(true);
+    
     try {
-      const result = await cavosAuth.signUp(
-        'user@example.com',
-        'SecurePassword123!',
-        process.env.REACT_APP_CAVOS_ORG_SECRET!
-      );
-      
-      setUser(result.user);
-      setWallet(result.wallet);
+      const result = await cavosAuth.signUp(email, password, 'your-org-secret');
+      console.log('User registered:', result.user);
+      console.log('Wallet created:', result.wallet.address);
+    } catch (error) {
+      console.error('Registration failed:', error);
+    }
+    
+    setLoading(false);
+  };
+
+  return (
+    <form onSubmit={handleRegister}>
+      <input 
+        type="email" 
+        value={email} 
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Email"
+        required 
+      />
+      <input 
+        type="password" 
+        value={password} 
+        onChange={(e) => setPassword(e.target.value)}
+        placeholder="Password"
+        required 
+      />
+      <button type="submit" disabled={loading}>
+        {loading ? 'Creating...' : 'Register'}
+      </button>
+    </form>
+  );
+}`}
+        />
+
+        <h3>2. User Login</h3>
+        <CodeBlock
+          language="typescript"
+          filename="Login.tsx"
+          code={`import React, { useState } from 'react';
+import { CavosAuth } from 'cavos-service-sdk';
+
+const cavosAuth = new CavosAuth('sepolia', 'your-app-id');
+
+function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    try {
+      const result = await cavosAuth.signIn(email, password, 'your-org-secret');
+      console.log('User logged in:', result.user);
+      console.log('Wallet address:', result.wallet.address);
       
       // Store tokens
       localStorage.setItem('accessToken', result.access_token);
       localStorage.setItem('refreshToken', result.refresh_token);
     } catch (error) {
-      console.error('Registration failed:', error);
-    }
-    setLoading(false);
-  };
-
-  const handleLogin = async () => {
-    setLoading(true);
-    try {
-      const result = await cavosAuth.signIn(
-        'user@example.com',
-        'SecurePassword123!',
-        process.env.REACT_APP_CAVOS_ORG_SECRET!
-      );
-      
-      setUser(result.user);
-      setWallet(result.wallet);
-      
-      localStorage.setItem('accessToken', result.access_token);
-      localStorage.setItem('refreshToken', result.refresh_token);
-    } catch (error) {
       console.error('Login failed:', error);
     }
+    
     setLoading(false);
   };
 
-  const executeTransaction = async () => {
+  return (
+    <form onSubmit={handleLogin}>
+      <input 
+        type="email" 
+        value={email} 
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Email"
+        required 
+      />
+      <input 
+        type="password" 
+        value={password} 
+        onChange={(e) => setPassword(e.target.value)}
+        placeholder="Password"
+        required 
+      />
+      <button type="submit" disabled={loading}>
+        {loading ? 'Signing in...' : 'Login'}
+      </button>
+    </form>
+  );
+}`}
+        />
+
+        <h3>3. Send Transaction</h3>
+        <CodeBlock
+          language="typescript"
+          filename="Transaction.tsx"
+          code={`import React, { useState } from 'react';
+import { CavosAuth } from 'cavos-service-sdk';
+
+const cavosAuth = new CavosAuth('sepolia', 'your-app-id');
+
+function Transaction() {
+  const [recipient, setRecipient] = useState('');
+  const [amount, setAmount] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const sendTransaction = async () => {
+    setLoading(true);
+    
     const accessToken = localStorage.getItem('accessToken');
-    if (!accessToken || !wallet) return;
+    const walletAddress = localStorage.getItem('walletAddress');
     
     try {
       const result = await cavosAuth.executeCalls(
-        wallet.address,
+        walletAddress,
         [{
           contractAddress: '0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d',
           entrypoint: 'transfer',
-          calldata: ['0x123...', '1000000000000000000', '0']
+          calldata: [recipient, amount, '0']
         }],
         accessToken
       );
       
-      console.log('Transaction:', result.txHash);
-      // Update token if automatically refreshed
-      if (result.accessToken) {
-        localStorage.setItem('accessToken', result.accessToken);
-      }
+      console.log('Transaction sent:', result.txHash);
     } catch (error) {
       console.error('Transaction failed:', error);
     }
-  };
-
-  const getBalance = async () => {
-    if (!wallet) return;
     
-    try {
-      const balance = await getBalanceOf(
-        wallet.address,
-        '0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d',
-        '18',
-        process.env.REACT_APP_CAVOS_API_KEY! // Server-side function requires API key
-      );
-      
-      console.log('STRK Balance:', balance);
-    } catch (error) {
-      console.error('Balance check failed:', error);
-    }
+    setLoading(false);
   };
-
-  if (loading) return <div>Loading...</div>;
-
-  if (user && wallet) {
-    return (
-      <div>
-        <h2>Welcome, {user.email}!</h2>
-        <p>Wallet: {wallet.address}</p>
-        <p>Network: {wallet.network}</p>
-        
-        <button onClick={executeTransaction}>
-          Send STRK Transaction
-        </button>
-        
-        <button onClick={getBalance}>
-          Check STRK Balance
-        </button>
-        
-        <button onClick={() => {
-          setUser(null);
-          setWallet(null);
-          localStorage.clear();
-        }}>
-          Sign Out
-        </button>
-      </div>
-    );
-  }
 
   return (
     <div>
-      <button onClick={handleRegister}>
-        Register New User
-      </button>
-      <button onClick={handleLogin}>
-        Login Existing User
+      <input 
+        value={recipient} 
+        onChange={(e) => setRecipient(e.target.value)}
+        placeholder="Recipient address"
+      />
+      <input 
+        value={amount} 
+        onChange={(e) => setAmount(e.target.value)}
+        placeholder="Amount"
+      />
+      <button onClick={sendTransaction} disabled={loading}>
+        {loading ? 'Sending...' : 'Send Transaction'}
       </button>
     </div>
   );
-}
+}`}
+        />
 
-export default App;`}
-              />
-            </div>
-          </TabsContent>
-
-          <TabsContent value="node">
-            <div className="space-y-4">
-              <CodeBlock
-                language="typescript"
-                filename="server.ts"
-                code={`import express from 'express';
-import { CavosAuth, executeCalls, getBalanceOf, deployWallet } from 'cavos-service-sdk';
-
-// Initialize CavosAuth instance for server
-const cavosAuth = new CavosAuth('sepolia', process.env.CAVOS_APP_ID!);
-
-const app = express();
-app.use(express.json());
-
-// Register endpoint
-app.post('/api/register', async (req, res) => {
-  try {
-    const { email, password, network = 'sepolia' } = req.body;
-    
-    const result = await cavosAuth.signUp(
-      email,
-      password,
-      process.env.CAVOS_ORG_SECRET!
-    );
-    
-    // Return user data and wallet info
-    res.json({
-      success: true,
-      user: result.user,
-      wallet: result.wallet,
-      user_id: result.user_id,
-      authData: {
-        access_token: result.access_token,
-        refresh_token: result.refresh_token,
-        expires_in: result.expires_in
-      }
-    });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
-
-// Login endpoint
-app.post('/api/login', async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    
-    const result = await cavosAuth.signIn(
-      email,
-      password,
-      process.env.CAVOS_ORG_SECRET!
-    );
-    
-    res.json({
-      success: true,
-      user: result.user,
-      wallet: result.wallet,
-      authData: {
-        access_token: result.access_token,
-        refresh_token: result.refresh_token,
-        expires_in: result.expires_in
-      }
-    });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
-
-// Refresh token endpoint
-app.post('/api/refresh', async (req, res) => {
-  try {
-    const { refresh_token, network = 'sepolia' } = req.body;
-    
-    const result = await cavosAuth.refreshToken(
-      refresh_token,
-      network
-    );
-    
-    res.json({
-      success: true,
-      authData: {
-        access_token: result.access_token,
-        refresh_token: result.refresh_token,
-        expires_in: result.expires_in
-      }
-    });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
-
-// Execute transaction endpoint (session-based)
-app.post('/api/execute', async (req, res) => {
-  try {
-    const { calls, address, accessToken } = req.body;
-    
-    const result = await cavosAuth.executeCalls(
-      address,
-      calls,
-      accessToken
-    );
-    
-    res.json({
-      success: true,
-      transaction_hash: result.txHash,
-      access_token: result.accessToken // May include refreshed token
-    });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
-
-// Get balance endpoint
-app.post('/api/balance', async (req, res) => {
-  try {
-    const { address, tokenAddress, decimals } = req.body;
-    
-    const result = await getBalanceOf(
-      address,
-      tokenAddress,
-      decimals,
-      process.env.CAVOS_API_KEY!
-    );
-    
-    res.json({
-      success: true,
-      balance: result.balance,
-      formatted: result.formatted
-    });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
-
-// Deploy wallet endpoint
-app.post('/api/deploy-wallet', async (req, res) => {
-  try {
-    const { network } = req.body;
-    
-    const result = await deployWallet(
-      network,
-      process.env.CAVOS_API_KEY!
-    );
-    
-    res.json({
-      success: true,
-      wallet: result.wallet,
-      address: result.address
-    });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
-
-// Delete user endpoint
-app.delete('/api/users/:userId', async (req, res) => {
-  try {
-    const { userId } = req.params;
-    
-    const result = await cavosAuth.deleteUser(
-      userId,
-      process.env.CAVOS_ORG_SECRET!
-    );
-    
-    res.json({
-      success: true,
-      message: 'User deleted successfully'
-    });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
-
-app.listen(3000, () => {
-  console.log('Server running on port 3000');
-});`}
-              />
-            </div>
-          </TabsContent>
-        </Tabs>
-
-        {/* Social Authentication */}
         <h2>Social Authentication</h2>
         
-        <p>
-          The Cavos SDK provides ready-to-use React components for social authentication 
-          with Apple and Google, handling the complete OAuth flow with automatic wallet deployment.
-        </p>
+        <p>Simple social login with Apple and Google:</p>
 
-        {/* Interactive Examples */}
-        <div className="space-y-6 my-8">
-          <SignInButtonExample
-            type="apple"
-            title="Apple Sign In Component"
-            description="React component for Apple authentication. Handles the complete OAuth flow and returns authenticated user data."
-          />
-          
-          <SignInButtonExample
-            type="google"
-            title="Google Sign In Component"
-            description="React component for Google authentication. Integrates with Google OAuth and provides seamless user experience."
-          />
-        </div>
-
-        <h3 className="text-lg font-medium mb-4">Implementation Guide</h3>
-        
+        <h3>Apple Sign In</h3>
         <CodeBlock
           language="typescript"
-          filename="SocialAuth.tsx"
+          filename="AppleAuth.tsx"
           code={`import React from 'react';
-import { SignInWithApple, SignInWithGoogle } from 'cavos-service-sdk';
+import { SignInWithApple } from 'cavos-service-sdk';
 
-const AuthComponent = () => {
-  const handleAuthCallback = () => {
-    // Extract authentication data from URL parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    const accessToken = urlParams.get('access_token');
-    const userData = urlParams.get('user');
-    
-    if (accessToken && userData) {
-      // Authentication successful
-      const user = JSON.parse(decodeURIComponent(userData));
-      console.log('User authenticated:', user);
-      
-      // Store tokens securely
-      localStorage.setItem('cavos_access_token', accessToken);
-      localStorage.setItem('cavos_user', JSON.stringify(user));
-      
-      // Redirect to your app's main interface
-      window.location.href = '/dashboard';
-    }
-  };
-
-  // Call this on your callback page
-  React.useEffect(() => {
-    handleAuthCallback();
-  }, []);
-
+function AppleAuth() {
   return (
-    <div className="auth-container">
-      <h2>Sign in to your account</h2>
-      
-      {/* Apple Sign In */}
-      <SignInWithApple
-        appId={process.env.REACT_APP_CAVOS_APP_ID}
-        network="sepolia"
-        finalRedirectUri="https://yourapp.com/auth/callback"
-      />
-      
-      {/* Google Sign In */}
-      <SignInWithGoogle
-        appId={process.env.REACT_APP_CAVOS_APP_ID}
-        network="sepolia"
-        finalRedirectUri="https://yourapp.com/auth/callback"
-      />
-    </div>
+    <SignInWithApple
+      appId="your-app-id"
+      network="sepolia"
+      finalRedirectUri="https://yourapp.com/auth/callback"
+    />
   );
-};
+}`}
+        />
 
-export default AuthComponent;`}
+        <h3>Google Sign In</h3>
+        <CodeBlock
+          language="typescript"
+          filename="GoogleAuth.tsx"
+          code={`import React from 'react';
+import { SignInWithGoogle } from 'cavos-service-sdk';
+
+function GoogleAuth() {
+  return (
+    <SignInWithGoogle
+      appId="your-app-id"
+      network="sepolia"
+      finalRedirectUri="https://yourapp.com/auth/callback"
+    />
+  );
+}`}
         />
 
         <Alert className="my-6">
           <Info className="h-4 w-4" />
           <AlertDescription>
-            <strong>Callback Handling:</strong> The social authentication flow redirects 
-            users to your <code>finalRedirectUri</code> with authentication data as URL parameters. 
-            Make sure to handle this data on your callback page.
+            <strong>Note:</strong> Social authentication redirects users to your callback URL 
+            with authentication data. Handle the callback to complete the login process.
           </AlertDescription>
         </Alert>
 
-        <h2>Configuration Options</h2>
+        <h2>Key Methods</h2>
 
-        <p>Customize the Cavos Service SDK for your application:</p>
+        <div className="space-y-4">
+          <div>
+            <h4 className="font-mono text-sm font-medium mb-2">
+              signUp(email, password, orgSecret)
+            </h4>
+            <p className="text-sm text-muted-foreground mb-2">
+              Register new user with automatic wallet deployment
+            </p>
+          </div>
 
-        <CodeBlock
-          language="typescript"
-          filename="config.ts"
-          code={`import { CavosAuth, formatAmount, getBalanceOf, executeCalls, deployWallet } from 'cavos-service-sdk';
+          <div>
+            <h4 className="font-mono text-sm font-medium mb-2">
+              signIn(email, password, orgSecret)
+            </h4>
+            <p className="text-sm text-muted-foreground mb-2">
+              Login existing user
+            </p>
+          </div>
 
-// Environment variables setup
-const config = {
-  appId: process.env.CAVOS_APP_ID!, // Your app ID (safe for frontend)
-  orgSecret: process.env.CAVOS_ORG_SECRET!, // Your organization secret (backend only)
-  apiKey: process.env.CAVOS_API_KEY!, // Your API key for wallet operations (backend only)
-  baseURL: 'https://services.cavos.xyz/api/v1/external',
-  defaultNetwork: 'sepolia' // or 'mainnet'
-};
-
-// Initialize CavosAuth instance
-const cavosAuth = new CavosAuth(config.defaultNetwork, config.appId);
-
-// Example usage with environment-specific configuration
-const getConfig = () => {
-  const isDevelopment = process.env.NODE_ENV === 'development';
-  
-  return {
-    appId: process.env.CAVOS_APP_ID!,
-    orgSecret: process.env.CAVOS_ORG_SECRET!,
-    apiKey: process.env.CAVOS_API_KEY!,
-    baseURL: isDevelopment 
-      ? 'https://services-dev.cavos.xyz/api/v1/external'
-      : 'https://services.cavos.xyz/api/v1/external',
-    defaultNetwork: isDevelopment ? 'sepolia' : 'mainnet',
-    
-    // Development-specific settings
-    debug: isDevelopment,
-    timeout: isDevelopment ? 30000 : 10000
-  };
-};
-
-// Create environment-specific CavosAuth instance
-const createCavosAuth = () => {
-  const config = getConfig();
-  return new CavosAuth(config.defaultNetwork, config.appId);
-};
-
-// Example authentication flow
-async function authenticateUser(email: string, password: string) {
-  try {
-    // Register new user
-    const signUpResult = await cavosAuth.signUp(
-      email,
-      password,
-      config.orgSecret
-    );
-    
-    console.log('User registered:', signUpResult.user);
-    console.log('Wallet deployed:', signUpResult.wallet);
-    
-    return signUpResult;
-  } catch (error) {
-    // If user already exists, try to sign in
-    if (error.message.includes('already exists')) {
-      const signInResult = await cavosAuth.signIn(
-        email,
-        password,
-        config.orgSecret
-      );
-      
-      console.log('User signed in:', signInResult.user);
-      return signInResult;
-    }
-    
-    throw error;
-  }
-}
-
-// Example transaction execution (session-based)
-async function executeTransaction(
-  accessToken: string,
-  walletAddress: string,
-  calls: any[]
-) {
-  try {
-    const result = await cavosAuth.executeCalls(
-      walletAddress,
-      calls,
-      accessToken
-    );
-    
-    console.log('Transaction executed:', result.txHash);
-    // Handle potential token refresh
-    if (result.accessToken) {
-      console.log('Token automatically refreshed');
-      // Update stored token
-      localStorage.setItem('accessToken', result.accessToken);
-    }
-    return result;
-  } catch (error) {
-    console.error('Transaction failed:', error);
-    throw error;
-  }
-}
-
-// Example balance checking
-async function checkTokenBalance(
-  walletAddress: string,
-  tokenAddress: string,
-  decimals: string = '18'
-) {
-  try {
-    const balance = await getBalanceOf(
-      walletAddress,
-      tokenAddress,
-      decimals,
-      config.apiKey
-    );
-    
-    console.log('Token balance:', balance);
-    return balance;
-  } catch (error) {
-    console.error('Balance check failed:', error);
-    throw error;
-  }
-}`}
-        />
-
-        <h2>API Reference</h2>
-
-        <div className="space-y-6 my-8">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Authentication Methods</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div>
-                  <h4 className="font-mono text-sm font-medium mb-2">
-                    cavosAuth.signUp(email, password, orgSecret)
-                  </h4>
-                  <p className="text-sm text-muted-foreground mb-2">
-                    Register new user with automatic wallet deployment
-                  </p>
-                  <CodeBlock
-                    language="typescript"
-                    code={`// Initialize CavosAuth instance first
-const cavosAuth = new CavosAuth('sepolia', 'your-app-id');
-
-const result = await cavosAuth.signUp(
-  'user@example.com',
-  'SecurePassword123!',
-  'your-org-secret'
-);
-
-// Returns: { user, wallet, user_id, access_token, refresh_token, expires_in }`}
-                  />
-                </div>
-
-                <div>
-                  <h4 className="font-mono text-sm font-medium mb-2">
-                    cavosAuth.signIn(email, password, orgSecret)
-                  </h4>
-                  <p className="text-sm text-muted-foreground mb-2">
-                    Authenticate existing user
-                  </p>
-                  <CodeBlock
-                    language="typescript"
-                    code={`const result = await cavosAuth.signIn(
-  'user@example.com',
-  'SecurePassword123!',
-  'your-org-secret'
-);
-
-// Returns: { user, wallet, access_token, refresh_token, expires_in }`}
-                  />
-                </div>
-
-                <div>
-                  <h4 className="font-mono text-sm font-medium mb-2">
-                    cavosAuth.refreshToken(refreshToken, network)
-                  </h4>
-                  <p className="text-sm text-muted-foreground mb-2">
-                    Refresh expired access tokens
-                  </p>
-                  <CodeBlock
-                    language="typescript"
-                    code={`const result = await cavosAuth.refreshToken(
-  'stored_refresh_token',
-  'sepolia' // network
-);
-
-// Returns: { access_token, refresh_token, expires_in }`}
-                  />
-                </div>
-
-                <div>
-                  <h4 className="font-mono text-sm font-medium mb-2">
-                    cavosAuth.deleteUser(user_id, orgSecret)
-                  </h4>
-                  <p className="text-sm text-muted-foreground mb-2">
-                    Delete user from organization
-                  </p>
-                  <CodeBlock
-                    language="typescript"
-                    code={`const result = await cavosAuth.deleteUser(
-  'auth0|123456789',
-  'your-org-secret'
-);
-
-// Returns: { success: true }`}
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">
-                Transaction & Wallet Methods
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div>
-                  <h4 className="font-mono text-sm font-medium mb-2">
-                    cavosAuth.executeCalls(address, calls, accessToken)
-                  </h4>
-                  <p className="text-sm text-muted-foreground mb-2">
-                    Execute contract calls on Starknet (session-based)
-                  </p>
-                  <CodeBlock
-                    language="typescript"
-                    code={`const result = await cavosAuth.executeCalls(
-  '0x456...', // wallet address
-  [{
-    contractAddress: '0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d',
-    entrypoint: 'transfer',
-    calldata: ['0x123...', '1000000000000000000', '0']
-  }],
-  'your-access-token'
-);
-
-// Returns: { txHash, accessToken } // May include refreshed token`}
-                  />
-                </div>
-
-                <div>
-                  <h4 className="font-mono text-sm font-medium mb-2">
-                    getBalanceOf(address, tokenAddress, decimals, apiKey)
-                  </h4>
-                  <p className="text-sm text-muted-foreground mb-2">
-                    Get token balance for wallet address
-                  </p>
-                  <CodeBlock
-                    language="typescript"
-                    code={`const balance = await getBalanceOf(
-  '0x456...', // wallet address
-  '0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d', // STRK token
-  '18', // decimals
-  'your-api-key'
-);
-
-// Returns: { balance, formatted }`}
-                  />
-                </div>
-
-                <div>
-                  <h4 className="font-mono text-sm font-medium mb-2">
-                    deployWallet(network, apiKey)
-                  </h4>
-                  <p className="text-sm text-muted-foreground mb-2">
-                    Deploy new wallet on Starknet
-                  </p>
-                  <CodeBlock
-                    language="typescript"
-                    code={`const wallet = await deployWallet(
-  'sepolia',
-  'your-api-key'
-);
-
-// Returns: { wallet, address }`}
-                  />
-                </div>
-
-                <div>
-                  <h4 className="font-mono text-sm font-medium mb-2">
-                    formatAmount(amount, decimals?)
-                  </h4>
-                  <p className="text-sm text-muted-foreground mb-2">
-                    Format amount for Starknet uint256
-                  </p>
-                  <CodeBlock
-                    language="typescript"
-                    code={`const formatted = await formatAmount('1000000000000000000', 18);
-
-// Returns: { uint256: { low: string, high: string } }`}
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <div>
+            <h4 className="font-mono text-sm font-medium mb-2">
+              executeCalls(address, calls, accessToken)
+            </h4>
+            <p className="text-sm text-muted-foreground mb-2">
+              Send transactions on Starknet
+            </p>
+          </div>
         </div>
 
         <Alert className="my-8">

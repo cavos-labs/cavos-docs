@@ -55,7 +55,7 @@ export const HelpfulTip: React.FC<TipProps> = ({
 export const CommonTips = {
   OrganizationSecret: () => (
     <HelpfulTip type="warning" title="Security Warning">
-      Never expose your Organization Secret in frontend code. This should only be used on your backend servers. 
+      Keep your Organization Secret secure in your client-side application. 
       For frontend applications, use your App ID which is safe to expose publicly.
     </HelpfulTip>
   ),

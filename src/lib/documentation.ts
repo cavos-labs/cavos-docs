@@ -21,7 +21,7 @@ Cavos Service provides comprehensive wallet infrastructure for Starknet with Aut
 - **Multi-Provider Authentication**: Apple Sign In, Google OAuth, and Auth0 support
 - **Organization Management**: Multi-tenant architecture with org-based isolation
 - **Smart Contract Execution**: Secure transaction execution on Starknet
-- **Cross-Platform SDKs**: Web, React Native, and Node.js integration
+- **Cross-Platform SDKs**: Web and React Native integration
 - **Secure Token Management**: Automatic token refresh with rotating tokens
 
 ### Getting Started
@@ -36,7 +36,7 @@ Get started with Cavos Service in under 5 minutes. This guide will walk you thro
 
 ### Prerequisites
 
-- Node.js 16+ or modern browser environment
+- Modern browser environment or React Native
 - Basic knowledge of JavaScript/TypeScript
 - A Cavos organization (register at https://services.cavos.xyz)
 
@@ -64,14 +64,12 @@ npm install cavos-service-native
 
 **Environment Variables:**
 \`\`\`bash
-# Frontend use (App ID - safe to expose)
+# Client-side environment variables
 REACT_APP_CAVOS_APP_ID=your-app-id
-
-# Backend use only (API Secret - keep secure!)
-CAVOS_ORG_SECRET=your-org-secret
+REACT_APP_CAVOS_ORG_SECRET=your-org-secret
 \`\`\`
 
-**Important:** Never expose your API Secret in frontend code. Use App ID for frontend components and API Secret for backend operations only.
+**Important:** Use environment variables for secure client-side authentication.
 
 #### Step 3: Basic Usage
 
@@ -124,24 +122,25 @@ npm install cavos-service-sdk
 \`\`\`typescript
 import { CavosAuth } from 'cavos-service-sdk';
 
-// Initialize with your organization secret
-const auth = new CavosAuth('YOUR_ORG_SECRET');
+// Initialize with network and app ID
+const auth = new CavosAuth('sepolia', 'YOUR_APP_ID');
 
 // Register a new user
 const user = await auth.signUp(
   'user@example.com',
   'Password123',
-  'sepolia' // network
+  'YOUR_ORG_SECRET'
 );
 
 // Login existing user
 const authData = await auth.signIn(
   'user@example.com',
-  'Password123'
+  'Password123',
+  'YOUR_ORG_SECRET'
 );
 
 // Get wallet information
-const wallet = authData.data.wallet;
+const wallet = authData.wallet;
 console.log('Wallet Address:', wallet.address);
 console.log('Network:', wallet.network);
 \`\`\`
@@ -216,7 +215,7 @@ The Cavos Service React Native SDK provides seamless Starknet wallet integration
 - Biometric authentication for sensitive operations
 - Secure token storage using Expo SecureStore
 - CavosWallet class for transaction execution and wallet management
-- Token rotation with backend-issued access/refresh tokens
+- Token rotation with secure access/refresh tokens
 - Support for Sepolia testnet and Mainnet networks
 
 ### Installation

@@ -12,14 +12,14 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { 
-  ArrowUpDown, 
-  Shield, 
-  Zap, 
-  Info, 
+import {
+  ArrowUpDown,
+  Shield,
+  Zap,
+  Info,
   AlertTriangle,
   Smartphone,
-  Globe
+  Globe,
 } from "lucide-react";
 
 const pageContent = `
@@ -65,16 +65,17 @@ const TokenSwapping = () => {
         </div>
 
         <p>
-          Token swapping in Cavos Service provides gasless token exchanges on 
-          Starknet through AVNU DEX aggregator integration. Swap any ERC-20 tokens 
-          with automatic slippage protection and complete gas fee abstraction.
+          Token swapping in Cavos Service provides gasless token exchanges on
+          Starknet through AVNU DEX aggregator integration. Swap any ERC-20
+          tokens with automatic slippage protection and complete gas fee
+          abstraction.
         </p>
 
         <Alert className="my-6">
           <Info className="h-4 w-4" />
           <AlertDescription>
-            <strong>Platform Availability:</strong> Token swapping is currently 
-            only available in the React Native SDK. Web SDK support is planned 
+            <strong>Platform Availability:</strong> Token swapping is currently
+            only available in the React Native SDK. Web SDK support is planned
             for future releases.
           </AlertDescription>
         </Alert>
@@ -126,7 +127,7 @@ const TokenSwapping = () => {
               </p>
             </div>
           </div>
-          
+
           <div className="flex items-start space-x-3">
             <div className="flex-shrink-0 w-6 h-6 bg-brand-primary rounded-full flex items-center justify-center text-white text-sm font-medium">
               2
@@ -134,11 +135,12 @@ const TokenSwapping = () => {
             <div>
               <h4 className="font-medium">Transaction Building</h4>
               <p className="text-sm text-muted-foreground">
-                Swap transaction is built with 5% slippage protection and approval handling
+                Swap transaction is built with 5% slippage protection and
+                approval handling
               </p>
             </div>
           </div>
-          
+
           <div className="flex items-start space-x-3">
             <div className="flex-shrink-0 w-6 h-6 bg-brand-primary rounded-full flex items-center justify-center text-white text-sm font-medium">
               3
@@ -146,7 +148,8 @@ const TokenSwapping = () => {
             <div>
               <h4 className="font-medium">Gasless Execution</h4>
               <p className="text-sm text-muted-foreground">
-                AVNU paymaster covers all gas fees using STRK tokens automatically
+                AVNU paymaster covers all gas fees using STRK tokens
+                automatically
               </p>
             </div>
           </div>
@@ -155,7 +158,7 @@ const TokenSwapping = () => {
         <h2>React Native Implementation</h2>
 
         <p>
-          The swap functionality is available through the CavosWallet class in 
+          The swap functionality is available through the CavosWallet class in
           the React Native SDK with optional biometric authentication.
         </p>
 
@@ -324,7 +327,8 @@ export default SwapScreen;`}
         <h2>API Integration Details</h2>
 
         <p>
-          For advanced use cases, you can integrate directly with the swap API endpoint.
+          For advanced use cases, you can integrate directly with the swap API
+          endpoint.
         </p>
 
         <Card className="my-6">
@@ -414,33 +418,43 @@ console.log('Refreshed token:', result.accessToken);`}
         <div className="space-y-4 my-6">
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Common Error Scenarios</CardTitle>
+              <CardTitle className="text-base">
+                Common Error Scenarios
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-3 text-sm">
                 <div>
-                  <code className="bg-muted px-2 py-1 rounded text-xs">Insufficient balance</code>
+                  <code className="bg-muted px-2 py-1 rounded text-xs">
+                    Insufficient balance
+                  </code>
                   <p className="text-muted-foreground mt-1">
                     User doesn't have enough tokens to complete the swap
                   </p>
                 </div>
-                
+
                 <div>
-                  <code className="bg-muted px-2 py-1 rounded text-xs">Biometric authentication failed</code>
+                  <code className="bg-muted px-2 py-1 rounded text-xs">
+                    Biometric authentication failed
+                  </code>
                   <p className="text-muted-foreground mt-1">
                     User cancelled or failed biometric verification
                   </p>
                 </div>
-                
+
                 <div>
-                  <code className="bg-muted px-2 py-1 rounded text-xs">Token not found</code>
+                  <code className="bg-muted px-2 py-1 rounded text-xs">
+                    Token not found
+                  </code>
                   <p className="text-muted-foreground mt-1">
                     Invalid token contract address provided
                   </p>
                 </div>
-                
+
                 <div>
-                  <code className="bg-muted px-2 py-1 rounded text-xs">Slippage too high</code>
+                  <code className="bg-muted px-2 py-1 rounded text-xs">
+                    Slippage too high
+                  </code>
                   <p className="text-muted-foreground mt-1">
                     Price impact exceeds 5% protection limit
                   </p>
@@ -453,8 +467,8 @@ console.log('Refreshed token:', result.accessToken);`}
         <Alert className="my-8">
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
-            <strong>Important:</strong> All swaps are executed with 5% slippage 
-            protection. Large trades may fail if price impact is too high. 
+            <strong>Important:</strong> All swaps are executed with 5% slippage
+            protection. Large trades may fail if price impact is too high.
             Consider breaking large swaps into smaller transactions.
           </AlertDescription>
         </Alert>
@@ -467,21 +481,23 @@ console.log('Refreshed token:', result.accessToken);`}
             <div>
               <h4 className="font-medium">Always Enable Biometric Auth</h4>
               <p className="text-sm text-muted-foreground">
-                Use biometric authentication for all swap operations to ensure security
+                Use biometric authentication for all swap operations to ensure
+                security
               </p>
             </div>
           </div>
-          
+
           <div className="flex items-start space-x-3">
             <Zap className="h-5 w-5 text-brand-secondary mt-0.5" />
             <div>
               <h4 className="font-medium">Check Token Balances First</h4>
               <p className="text-sm text-muted-foreground">
-                Verify sufficient balance before attempting swaps to avoid errors
+                Verify sufficient balance before attempting swaps to avoid
+                errors
               </p>
             </div>
           </div>
-          
+
           <div className="flex items-start space-x-3">
             <Info className="h-5 w-5 text-brand-accent mt-0.5" />
             <div>
@@ -495,11 +511,13 @@ console.log('Refreshed token:', result.accessToken);`}
 
         <Card className="my-8 border-success/20 bg-success/5">
           <CardHeader>
-            <CardTitle className="text-success">Ready to Implement Swaps!</CardTitle>
+            <CardTitle className="text-success">
+              Ready to Implement Swaps!
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground mb-4">
-              You now have everything needed to integrate gasless token swapping 
+              You now have everything needed to integrate gasless token swapping
               into your React Native application.
             </p>
             <div className="flex flex-wrap gap-2">
@@ -514,7 +532,10 @@ console.log('Refreshed token:', result.accessToken);`}
                 </a>
               </Badge>
               <Badge variant="outline">
-                <a href="/guides/troubleshooting" className="text-brand-primary">
+                <a
+                  href="/guides/troubleshooting"
+                  className="text-brand-primary"
+                >
                   Troubleshooting
                 </a>
               </Badge>
