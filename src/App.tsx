@@ -15,8 +15,6 @@ import WebSDK from "./pages/sdk/WebSDK";
 import NativeSDK from "./pages/sdk/NativeSDK";
 import APIAuth from "./pages/api/AuthAPI";
 import WalletAPI from "./pages/api/WalletAPI";
-import TokenSwapping from "./pages/guides/TokenSwapping";
-import Authentication from "./pages/guides/Authentication";
 import { AuthDemo } from "./pages/AuthDemo";
 import NotFound from "./pages/NotFound";
 
@@ -39,8 +37,6 @@ const App = () => (
             <Route path="/sdk/native" element={<NativeSDK />} />
             <Route path="/api/auth" element={<APIAuth />} />
             <Route path="/api/wallet" element={<WalletAPI />} />
-            <Route path="/guides/token-swapping" element={<TokenSwapping />} />
-            <Route path="/guides/authentication" element={<Authentication />} />
             <Route path="/auth/demo" element={<AuthDemo />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

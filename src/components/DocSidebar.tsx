@@ -1,5 +1,5 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
+import React from "react";
+import { NavLink } from "react-router-dom";
 import {
   Home,
   BookOpen,
@@ -14,8 +14,8 @@ import {
   ArrowUpDown,
   Lock,
   AlertCircle,
-  ChevronRight
-} from 'lucide-react';
+  ChevronRight,
+} from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -26,41 +26,51 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-  SidebarSeparator
-} from '@/components/ui/sidebar';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+  SidebarSeparator,
+} from "@/components/ui/sidebar";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 const navigationItems = [
   {
-    title: "Getting Started",
+    title: "Get Started",
     items: [
-      { title: "Overview", url: "/", icon: Home },
+      { title: "Home", url: "/", icon: Home },
       { title: "Quick Start", url: "/quick-start", icon: Zap },
       { title: "Installation", url: "/installation", icon: Settings },
-    ]
-  },
-  {
-    title: "Implementation Guides", 
-    items: [
-      { title: "Authentication Flow", url: "/guides/authentication", icon: Lock },
-      { title: "Token Swapping", url: "/guides/token-swapping", icon: ArrowUpDown },
-      { title: "Organization Setup", url: "https://services.cavos.xyz", icon: Settings, external: true },
-    ]
+    ],
   },
   {
     title: "SDKs",
     items: [
       { title: "Web SDK (v1.2.32)", url: "/sdk/web", icon: Globe },
-      { title: "React Native SDK (v1.3.3)", url: "/sdk/native", icon: Smartphone },
-    ]
+      {
+        title: "React Native SDK (v1.3.3)",
+        url: "/sdk/native",
+        icon: Smartphone,
+      },
+    ],
+  },
+  {
+    title: "Guides",
+    items: [
+      {
+        title: "Token Swapping",
+        url: "/guides/token-swapping",
+        icon: ArrowUpDown,
+      },
+    ],
   },
   {
     title: "API Reference",
     items: [
       { title: "Authentication API", url: "/api/auth", icon: Key },
       { title: "Wallet & Transactions", url: "/api/wallet", icon: Wallet },
-    ]
-  }
+    ],
+  },
 ];
 
 export const DocSidebar: React.FC = () => {
@@ -78,9 +88,11 @@ export const DocSidebar: React.FC = () => {
                   <SidebarGroupLabel className="text-xs uppercase tracking-wider font-semibold text-muted-foreground">
                     {section.title}
                   </SidebarGroupLabel>
-                  {!collapsed && <ChevronRight className="h-4 w-4 transition-transform group-data-[state=open]:rotate-90" />}
+                  {!collapsed && (
+                    <ChevronRight className="h-4 w-4 transition-transform group-data-[state=open]:rotate-90" />
+                  )}
                 </CollapsibleTrigger>
-                
+
                 <CollapsibleContent>
                   <SidebarGroupContent>
                     <SidebarMenu>
@@ -103,8 +115,8 @@ export const DocSidebar: React.FC = () => {
                                 className={({ isActive }) =>
                                   `flex items-center space-x-3 px-3 py-2 rounded-md text-sm transition-all ${
                                     isActive
-                                      ? 'bg-nav-active/10 text-nav-active border-r-2 border-nav-active'
-                                      : 'text-nav-foreground hover:bg-nav-hover hover:text-nav-active'
+                                      ? "bg-nav-active/10 text-nav-active border-r-2 border-nav-active"
+                                      : "text-nav-foreground hover:bg-nav-hover hover:text-nav-active"
                                   }`
                                 }
                               >
@@ -120,8 +132,10 @@ export const DocSidebar: React.FC = () => {
                 </CollapsibleContent>
               </Collapsible>
             </SidebarGroup>
-            
-            {index < navigationItems.length - 1 && <SidebarSeparator className="my-4" />}
+
+            {index < navigationItems.length - 1 && (
+              <SidebarSeparator className="my-4" />
+            )}
           </div>
         ))}
       </SidebarContent>
