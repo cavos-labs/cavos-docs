@@ -50,6 +50,11 @@ const navigationItems = [
         url: "/sdk/native",
         icon: Smartphone,
       },
+      {
+        title: "Aegis SDK (v0.1.5)",
+        url: "/sdk/aegis",
+        icon: Shield,
+      },
     ],
   },
   {
