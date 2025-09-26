@@ -145,7 +145,7 @@ export const AppleSignInScreen = () => {
     console.log('Wallet address:', wallet.address);
     console.log('Network:', wallet.network);
     console.log('User email:', wallet.email);
-    
+
     // Navigate to main app or save wallet instance
     // wallet is a CavosWallet instance ready for transactions
   };
@@ -202,7 +202,7 @@ export const GoogleSignInScreen = () => {
   const handleSuccess = (wallet) => {
     console.log('Google login successful:', wallet);
     console.log('Wallet address:', wallet.address);
-    
+
     // wallet is a CavosWallet instance
     // Store wallet instance for app use
   };
@@ -276,7 +276,7 @@ export const SecureTransaction: React.FC<SecureTransactionProps> = ({ wallet }) 
         ],
         true // requireBiometric = true
       );
-      
+
       Alert.alert('Success', 'Transaction completed successfully!');
       console.log('Transaction hash:', result.transaction_hash);
     } catch (error) {
@@ -297,7 +297,7 @@ export const SecureTransaction: React.FC<SecureTransactionProps> = ({ wallet }) 
         '0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d', // STRK
         true // requireBiometric = true
       );
-      
+
       Alert.alert('Swap Complete', 'Token swap completed successfully!');
       console.log('Swap result:', result);
     } catch (error) {
@@ -311,7 +311,7 @@ export const SecureTransaction: React.FC<SecureTransactionProps> = ({ wallet }) 
         title="Send STRK (with Face ID)"
         onPress={executeSecureTransaction}
       />
-      
+
       <Button
         title="Swap ETH → STRK (with Face ID)"
         onPress={executeSwapWithBiometric}
@@ -322,6 +322,199 @@ export const SecureTransaction: React.FC<SecureTransactionProps> = ({ wallet }) 
             />
           </TabsContent>
         </Tabs>
+
+        <h2>Understanding the CavosWallet Object</h2>
+
+        <p className="mb-4">
+          The CavosWallet object returned from successful login contains all the functionality needed to interact with the Starknet blockchain.
+          It's a fully authenticated wallet instance that maintains the user's session and provides direct access to their deployed smart account.
+        </p>
+
+        <h3 className="text-lg font-medium mb-4">What the CavosWallet Object Provides</h3>
+
+        <div className="space-y-4 mb-6">
+          <div>
+            <h4 className="font-medium">Wallet Properties</h4>
+            <ul className="list-disc list-inside text-sm text-muted-foreground ml-4">
+              <li><code>wallet.address</code> - The user's Starknet wallet address</li>
+              <li><code>wallet.network</code> - Current network (sepolia/mainnet)</li>
+              <li><code>wallet.email</code> - User's email (from social login)</li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-medium">Core Methods</h4>
+            <ul className="list-disc list-inside text-sm text-muted-foreground ml-4">
+              <li><code>wallet.execute()</code> - Execute single contract call</li>
+              <li><code>wallet.executeCalls()</code> - Execute multiple calls in batch</li>
+              <li><code>wallet.swap()</code> - Token swapping</li>
+              <li><code>wallet.getWalletInfo()</code> - Get wallet information</li>
+              <li><code>wallet.isAuthenticated()</code> - Check authentication status</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3 className="text-lg font-medium mb-4">Using the Wallet in handleSuccess</h3>
+
+        <CodeBlock
+          language="typescript"
+          filename="components/LoginWithWalletUsage.tsx"
+          code={`import React from 'react';
+import { View, Alert } from 'react-native';
+import { SignInWithApple, SignInWithGoogle } from 'cavos-service-native';
+
+export const LoginScreen = () => {
+  const handleSuccess = async (wallet) => {
+    console.log('Login successful! Wallet ready to use.');
+
+    // Wallet properties - available immediately
+    console.log('Wallet address:', wallet.address);
+    console.log('Network:', wallet.network);
+    console.log('User email:', wallet.email);
+
+    // Basic wallet operations you can perform right away:
+
+    // 1. Get wallet information
+    const walletInfo = wallet.getWalletInfo();
+    console.log('Wallet Info:', walletInfo);
+    console.log('Is Authenticated:', await wallet.isAuthenticated());
+
+    // 2. Send a simple transaction (example: send 0.001 ETH)
+    try {
+      const result = await wallet.execute(
+        '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7', // ETH contract
+        'transfer',
+        [
+          '0x123...', // recipient address
+          '1000000000000000', // 0.001 ETH in wei
+          '0' // high part for u256
+        ]
+      );
+      console.log('Transaction sent:', result.transaction_hash);
+      Alert.alert('Success', 'Transaction sent successfully!');
+    } catch (error) {
+      console.error('Transaction failed:', error);
+      Alert.alert('Error', 'Transaction failed: ' + error.message);
+    }
+
+    // 3. Perform a token swap (0.001 ETH for STRK)
+    try {
+      const swapResult = await wallet.swap(
+        1000000000000000, // 0.001 ETH in wei (number, not string)
+        '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7', // ETH
+        '0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d', // STRK
+        false // no biometric required for this example
+      );
+      console.log('Swap completed:', swapResult);
+      Alert.alert('Swap Success', 'Token swap completed!');
+    } catch (error) {
+      console.error('Swap failed:', error);
+    }
+
+    // Store wallet instance for app-wide use
+    // You would typically store this in your app's state management
+    // (Redux, Context, Zustand, etc.)
+    storeWalletInstance(wallet);
+
+    // Navigate to main app
+    navigateToMainApp();
+  };
+
+  const handleError = (error) => {
+    console.error('Login failed:', error);
+    Alert.alert('Login Failed', error.message);
+  };
+
+  const storeWalletInstance = (wallet) => {
+    // Store in your app's global state
+    // Example with Context:
+    // setWalletContext(wallet);
+
+    // Example with Redux:
+    // dispatch(setWallet(wallet));
+
+    // Example with simple state:
+    // setGlobalWallet(wallet);
+  };
+
+  const navigateToMainApp = () => {
+    // Navigate to your main app screens
+    // navigation.navigate('MainApp');
+  };
+
+  return (
+    <View>
+      <SignInWithApple
+        appId="your-org-app-id"
+        network="sepolia"
+        finalRedirectUri="yourapp://callback"
+        onSuccess={handleSuccess}
+        onError={handleError}
+      >
+        Sign in with Apple
+      </SignInWithApple>
+
+      <SignInWithGoogle
+        appId="your-org-app-id"
+        network="sepolia"
+        finalRedirectUri="yourapp://callback"
+        onSuccess={handleSuccess}
+        onError={handleError}
+      >
+        Sign in with Google
+      </SignInWithGoogle>
+    </View>
+  );
+};`}
+        />
+
+        <h3 className="text-lg font-medium mb-4">Key CavosWallet Methods</h3>
+
+        <div className="space-y-4">
+          <div>
+            <h4 className="font-mono text-sm font-medium mb-2">wallet.execute(contractAddress, entrypoint, calldata, bioAuth)</h4>
+            <p className="text-sm text-muted-foreground">
+              Execute a single contract call on Starknet. Returns transaction hash on success.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="font-mono text-sm font-medium mb-2">wallet.executeCalls(calls, bioAuth)</h4>
+            <p className="text-sm text-muted-foreground">
+              Execute multiple contract calls in a single batch transaction for efficiency.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="font-mono text-sm font-medium mb-2">wallet.swap(amount, sellTokenAddress, buyTokenAddress, bioAuth)</h4>
+            <p className="text-sm text-muted-foreground">
+              Built-in token swapping functionality with optional biometric authentication.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="font-mono text-sm font-medium mb-2">wallet.getWalletInfo()</h4>
+            <p className="text-sm text-muted-foreground">
+              Returns wallet information including address, network, email, and authentication status.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="font-mono text-sm font-medium mb-2">wallet.isAuthenticated()</h4>
+            <p className="text-sm text-muted-foreground">
+              Checks if the wallet is currently authenticated with valid tokens.
+            </p>
+          </div>
+        </div>
+
+        <Alert className="my-6">
+          <Info className="h-4 w-4" />
+          <AlertDescription>
+            <strong>Important:</strong> The CavosWallet object maintains authentication state and tokens automatically.
+            Store it in your app's global state after successful login to access wallet functionality throughout your app.
+            The wallet handles token refresh and maintains the user session seamlessly.
+          </AlertDescription>
+        </Alert>
 
         <h2>Security Best Practices</h2>
 
