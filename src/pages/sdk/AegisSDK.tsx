@@ -15,23 +15,16 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Shield, Smartphone, Zap, Globe, Code, Layers, Info, ArrowRight } from "lucide-react";
 
 const pageContent = `
-The Aegis SDK provides a simple and powerful solution for Starknet wallet management with in-app wallets and gasless transactions. Built with TypeScript for React Native/Expo and Node.js environments with automatic wallet deployment and AVNU paymaster integration.
+Simple SDK for Starknet wallets with **OAuth (Apple/Google)**, **Email/Password**, and **In-app wallets**. React and React Native compatible.
 
-## Key Features
+## How It Works (Super Simple!)
 
-- Complete TypeScript support with comprehensive type definitions
-- In-app wallet creation and management (no external wallet required)
-- AVNU paymaster integration for gasless transactions
-- React Native hooks and context for easy integration
-- Support for both Sepolia testnet and Mainnet networks
-- Client-side signing with secure key storage
-- Automatic wallet deployment and account abstraction
-- Token transfers, swaps, and NFT management
-- Privacy-first analytics with no private data transmitted
+1. **Wrap your app** with AegisProvider
+2. **Use the hook** useAegis() in any component
+3. **Get aegisAccount** - this is your wallet object
+4. **Use aegisAccount** to login and send transactions
 
-## Installation and Setup
-
-Get started with the Aegis SDK for mobile-first Starknet applications.
+That's it! The main thing to remember is that **aegisAccount** is your wallet - use it for everything!
 `;
 
 const AegisSDK = () => {
@@ -51,50 +44,58 @@ const AegisSDK = () => {
             variant="secondary"
             className="bg-brand-primary/10 text-brand-primary"
           >
-            v0.1.5
+            Latest
           </Badge>
           <Badge variant="outline">TypeScript</Badge>
           <Badge variant="outline">React Native</Badge>
           <Badge variant="outline">Starknet</Badge>
-          <Badge variant="outline">Gasless</Badge>
+          <Badge variant="outline">aegisAccount</Badge>
         </div>
 
         <p>
-          The Aegis SDK provides simple SDK for Starknet wallets with gasless transactions.
-          Works with both <strong>React Native/Expo</strong> and <strong>React web applications</strong>,
-          featuring in-app wallet creation, secure key storage, and seamless user experiences.
+          Simple SDK for Starknet wallets with <strong>OAuth (Apple/Google)</strong>,
+          <strong> Email/Password</strong>, and <strong>In-app wallets</strong>. Works with both
+          <strong> React Native/Expo</strong> and <strong>React web applications</strong>.
         </p>
+
+        <Alert className="my-6">
+          <Info className="h-4 w-4" />
+          <AlertDescription>
+            <strong>Remember:</strong> Everything happens through the <code>aegisAccount</code> object.
+            It's your main wallet - use it for login, transactions, and everything else!
+          </AlertDescription>
+        </Alert>
 
         <div className="responsive-grid section-spacing">
           <Card className="text-center">
             <CardHeader>
               <Shield className="h-8 w-8 mx-auto text-brand-primary mb-2" />
-              <CardTitle className="text-base">In-App Wallets</CardTitle>
-              <CardDescription>No external wallet required</CardDescription>
+              <CardTitle className="text-base">AegisProvider</CardTitle>
+              <CardDescription>Wrap your app for context</CardDescription>
+            </CardHeader>
+          </Card>
+
+          <Card className="text-center">
+            <CardHeader>
+              <Code className="h-8 w-8 mx-auto text-brand-secondary mb-2" />
+              <CardTitle className="text-base">useAegis Hook</CardTitle>
+              <CardDescription>Get aegisAccount in any component</CardDescription>
             </CardHeader>
           </Card>
 
           <Card className="text-center">
             <CardHeader>
               <Zap className="h-8 w-8 mx-auto text-warning mb-2" />
-              <CardTitle className="text-base">Gasless Transactions</CardTitle>
-              <CardDescription>AVNU paymaster integration</CardDescription>
+              <CardTitle className="text-base">aegisAccount Object</CardTitle>
+              <CardDescription>Your main wallet interface</CardDescription>
             </CardHeader>
           </Card>
 
           <Card className="text-center">
             <CardHeader>
-              <Smartphone className="h-8 w-8 mx-auto text-brand-secondary mb-2" />
-              <CardTitle className="text-base">Cross Platform</CardTitle>
-              <CardDescription>React Native, Expo & React</CardDescription>
-            </CardHeader>
-          </Card>
-
-          <Card className="text-center">
-            <CardHeader>
-              <Code className="h-8 w-8 mx-auto text-brand-accent mb-2" />
-              <CardTitle className="text-base">TypeScript</CardTitle>
-              <CardDescription>Full type safety</CardDescription>
+              <Globe className="h-8 w-8 mx-auto text-brand-accent mb-2" />
+              <CardTitle className="text-base">Three Login Types</CardTitle>
+              <CardDescription>OAuth, Email, or Create Wallet</CardDescription>
             </CardHeader>
           </Card>
         </div>
@@ -113,184 +114,418 @@ const AegisSDK = () => {
             >
               https://aegis.cavos.xyz
             </a>{" "}
-            to get your unique App ID for authentication and analytics.
+            to get your unique App ID.
           </AlertDescription>
         </Alert>
 
+        <h2>How It Works (Super Simple!)</h2>
+
+        <div className="space-y-4 my-6">
+          <div className="flex items-start space-x-3">
+            <div className="bg-brand-primary/10 text-brand-primary rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">1</div>
+            <div>
+              <h4 className="font-medium">Wrap your app with AegisProvider</h4>
+              <p className="text-sm text-muted-foreground">This gives your whole app access to wallet context</p>
+            </div>
+          </div>
+          <div className="flex items-start space-x-3">
+            <div className="bg-brand-primary/10 text-brand-primary rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">2</div>
+            <div>
+              <h4 className="font-medium">Use useAegis() hook in any component</h4>
+              <p className="text-sm text-muted-foreground">This gives you the aegisAccount object</p>
+            </div>
+          </div>
+          <div className="flex items-start space-x-3">
+            <div className="bg-brand-primary/10 text-brand-primary rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">3</div>
+            <div>
+              <h4 className="font-medium">Use aegisAccount for everything</h4>
+              <p className="text-sm text-muted-foreground">Login, transactions, balances - all through aegisAccount</p>
+            </div>
+          </div>
+        </div>
+
         <h2>Quick Start</h2>
 
-        <Tabs defaultValue="react-native" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="react-native">React Native/React</TabsTrigger>
-            <TabsTrigger value="basic">Basic SDK</TabsTrigger>
+        <Tabs defaultValue="step1" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="step1">Step 1: Provider</TabsTrigger>
+            <TabsTrigger value="step2">Step 2: Component</TabsTrigger>
+            <TabsTrigger value="complete">Complete Example</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="react-native" className="space-y-4">
-            <h3>React Native/React with Hooks (Recommended)</h3>
-
-            <h4>1. Setup Provider</h4>
+          <TabsContent value="step1" className="space-y-4">
+            <h3>Step 1: Wrap Your App</h3>
             <CodeBlock
               language="typescript"
-              filename="_layout.tsx"
+              filename="App.tsx"
               code={`import { AegisProvider } from '@cavos/aegis';
 
 export default function App() {
   return (
     <AegisProvider
       config={{
-        network: 'SN_SEPOLIA',
-        appName: 'MyApp',
-        appId: 'your-unique-app-id',
-        paymasterApiKey: 'your-avnu-api-key',
-        enableLogging: true
+        network: 'sepolia',
+        appId: 'your-app-id' // Get from https://aegis.cavos.xyz
       }}
     >
-      {/* Your app components */}
+      {/* Your app components here */}
+      <MyWalletComponent />
     </AegisProvider>
   );
 }`}
             />
+          </TabsContent>
 
-            <h4>2. Use in Components</h4>
+          <TabsContent value="step2" className="space-y-4">
+            <h3>Step 2: Use in Any Component</h3>
             <CodeBlock
               language="typescript"
-              filename="WalletButton.tsx"
-              code={`import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { useAegis } from '@cavos/aegis';
+              filename="WalletComponent.tsx"
+              code={`import { useAegis } from '@cavos/aegis';
+import { openAuthSessionAsync } from 'expo-web-browser';
 
-function WalletButton() {
-  const { isConnected, currentAddress, deployWallet, disconnect } = useAegis();
+function MyWalletComponent() {
+  const { aegisAccount, isWalletConnected } = useAegis();
 
-  if (isConnected) {
+  // Login with Apple
+  const loginWithApple = async () => {
+    const url = await aegisAccount.getAppleOAuthUrl('exp://192.168.1.16:8081');
+    const result = await openAuthSessionAsync(url, 'exp://192.168.1.16:8081');
+    await aegisAccount.handleOAuthCallback(result);
+  };
+
+  // Login with Email
+  const loginWithEmail = async () => {
+    await aegisAccount.signIn('user@example.com', 'password123');
+  };
+
+  // Create new wallet
+  const createWallet = async () => {
+    const privateKey = await aegisAccount.deployAccount();
+    console.log('Save this:', privateKey); // Save securely!
+  };
+
+  // Send transaction
+  const sendMoney = async () => {
+    await aegisAccount.execute(
+      '0x123...contract',
+      'transfer',
+      ['0x456...recipient', '1000']
+    );
+  };
+
+  if (isWalletConnected) {
     return (
-      <View>
-        <Text>Connected: {currentAddress}</Text>
-        <TouchableOpacity onPress={disconnect}>
-          <Text>Disconnect</Text>
-        </TouchableOpacity>
-      </View>
+      <div>
+        <p>Address: {aegisAccount.address}</p>
+        <button onClick={sendMoney}>Send Money</button>
+      </div>
     );
   }
 
   return (
-    <TouchableOpacity onPress={deployWallet}>
-      <Text>Create Wallet</Text>
-    </TouchableOpacity>
+    <div>
+      <button onClick={loginWithApple}>Login with Apple</button>
+      <button onClick={loginWithEmail}>Login with Email</button>
+      <button onClick={createWallet}>Create Wallet</button>
+    </div>
   );
 }`}
             />
           </TabsContent>
 
-          <TabsContent value="basic" className="space-y-4">
-            <h3>Basic SDK Usage</h3>
-
+          <TabsContent value="complete" className="space-y-4">
+            <h3>Complete Working Example</h3>
             <CodeBlock
               language="typescript"
-              filename="sdk-example.ts"
-              code={`import { AegisSDK } from '@cavos/aegis';
+              filename="FullExample.tsx"
+              code={`import React from 'react';
+import { AegisProvider, useAegis } from '@cavos/aegis';
+import { openAuthSessionAsync } from 'expo-web-browser';
 
-const sdk = new AegisSDK({
-  network: 'SN_SEPOLIA',
-  appName: 'MyApp',
-  appId: 'your-unique-app-id',
-  paymasterApiKey: 'your-avnu-api-key',
-  enableLogging: true
-});
+// 1. Wrap your app
+export default function App() {
+  return (
+    <AegisProvider config={{ network: 'sepolia', appId: 'your-app-id' }}>
+      <WalletApp />
+    </AegisProvider>
+  );
+}
 
-// Deploy new wallet (generates + deploys + connects)
-const privateKey = await sdk.deployAccount();
-// 🔐 Store this privateKey securely!
+// 2. Use in components
+function WalletApp() {
+  const { aegisAccount, isWalletConnected } = useAegis();
 
-// Or connect with existing key
-await sdk.connectAccount('0x123...your_private_key');`}
+  const handleAppleLogin = async () => {
+    const url = await aegisAccount.getAppleOAuthUrl('exp://192.168.1.16:8081');
+    const result = await openAuthSessionAsync(url, 'exp://192.168.1.16:8081');
+    await aegisAccount.handleOAuthCallback(result);
+  };
+
+  if (isWalletConnected) {
+    return (
+      <div>
+        <h1>Connected!</h1>
+        <p>Address: {aegisAccount.address}</p>
+
+        <button onClick={() =>
+          aegisAccount.execute('0x123...', 'transfer', ['0x456...', '1000'])
+        }>
+          Send Transaction
+        </button>
+
+        <button onClick={() => aegisAccount.signOut()}>
+          Logout
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <h1>Login to Your Wallet</h1>
+      <button onClick={handleAppleLogin}>Login with Apple</button>
+      <button onClick={() => aegisAccount.signIn('user@example.com', 'password')}>
+        Login with Email
+      </button>
+      <button onClick={() => aegisAccount.deployAccount()}>
+        Create New Wallet
+      </button>
+    </div>
+  );
+}`}
             />
           </TabsContent>
         </Tabs>
 
-        <h2>Core Operations</h2>
+        <h2>The aegisAccount Object (Most Important!)</h2>
 
-        <h3>Execute Transactions</h3>
+        <p className="mb-4">
+          <strong>This is your main wallet object.</strong> Everything happens through <code>aegisAccount</code>:
+        </p>
+
+        <Tabs defaultValue="login" className="w-full">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="login">Login Methods</TabsTrigger>
+            <TabsTrigger value="transactions">Transactions</TabsTrigger>
+            <TabsTrigger value="balances">Balances</TabsTrigger>
+            <TabsTrigger value="status">Status</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="login">
+            <h4>Login Methods</h4>
+            <CodeBlock
+              language="typescript"
+              filename="login-methods.ts"
+              code={`// OAuth (Apple/Google)
+const url = await aegisAccount.getAppleOAuthUrl('your-redirect-uri');
+const url = await aegisAccount.getGoogleOAuthUrl('your-redirect-uri');
+await aegisAccount.handleOAuthCallback(result);
+
+// Email/Password
+await aegisAccount.signUp('email@example.com', 'password');
+await aegisAccount.signIn('email@example.com', 'password');
+await aegisAccount.signOut();
+
+// In-app Wallets
+const privateKey = await aegisAccount.deployAccount(); // Creates new wallet
+await aegisAccount.connectAccount('private-key'); // Connect existing
+aegisAccount.disconnect(); // Disconnect`}
+            />
+          </TabsContent>
+
+          <TabsContent value="transactions">
+            <h4>Transaction Methods</h4>
+            <CodeBlock
+              language="typescript"
+              filename="transactions.ts"
+              code={`// Send transaction
+await aegisAccount.execute(contract, method, params);
+
+// Multiple transactions
+await aegisAccount.executeBatch([
+  { contractAddress: '0x123...', entrypoint: 'approve', calldata: [...] },
+  { contractAddress: '0x456...', entrypoint: 'swap', calldata: [...] }
+]);
+
+// Read data (no transaction)
+const result = await aegisAccount.call(contract, method, params);`}
+            />
+          </TabsContent>
+
+          <TabsContent value="balances">
+            <h4>Balance Methods</h4>
+            <CodeBlock
+              language="typescript"
+              filename="balances.ts"
+              code={`const ethBalance = await aegisAccount.getETHBalance();
+const tokenBalance = await aegisAccount.getTokenBalance('0x123...', 18);
+const nfts = await aegisAccount.getNFTs('0x123...');`}
+            />
+          </TabsContent>
+
+          <TabsContent value="status">
+            <h4>Status Methods</h4>
+            <CodeBlock
+              language="typescript"
+              filename="status.ts"
+              code={`console.log('Address:', aegisAccount.address);
+console.log('Connected:', aegisAccount.isWalletConnected());
+console.log('Status:', aegisAccount.getWalletStatus());`}
+            />
+          </TabsContent>
+        </Tabs>
+
+        <h2>Three Ways to Login</h2>
+
+        <Tabs defaultValue="oauth" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="oauth">OAuth</TabsTrigger>
+            <TabsTrigger value="email">Email</TabsTrigger>
+            <TabsTrigger value="wallet">Wallet</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="oauth" className="space-y-4">
+            <h3>OAuth (Apple/Google)</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              <strong>Best for:</strong> Social apps, easy login
+            </p>
+
+            <CodeBlock
+              language="typescript"
+              filename="oauth-example.tsx"
+              code={`// Step 1: Get URL
+const url = await aegisAccount.getAppleOAuthUrl('exp://192.168.1.16:8081');
+
+// Step 2: Open browser (your way)
+const result = await openAuthSessionAsync(url, 'exp://192.168.1.16:8081');
+
+// Step 3: Handle result
+await aegisAccount.handleOAuthCallback(result);`}
+            />
+          </TabsContent>
+
+          <TabsContent value="email" className="space-y-4">
+            <h3>Email/Password</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              <strong>Best for:</strong> Simple apps, no OAuth setup
+            </p>
+
+            <CodeBlock
+              language="typescript"
+              filename="email-example.tsx"
+              code={`// Sign up
+await aegisAccount.signUp('user@example.com', 'password123');
+
+// Sign in
+await aegisAccount.signIn('user@example.com', 'password123');`}
+            />
+          </TabsContent>
+
+          <TabsContent value="wallet" className="space-y-4">
+            <h3>In-App Wallets</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              <strong>Best for:</strong> Crypto apps, full control
+            </p>
+
+            <CodeBlock
+              language="typescript"
+              filename="wallet-example.tsx"
+              code={`// Create new wallet
+const privateKey = await aegisAccount.deployAccount();
+// Save this privateKey securely!
+
+// Or connect existing
+await aegisAccount.connectAccount('existing-private-key');`}
+            />
+          </TabsContent>
+        </Tabs>
+
+        <h2>Browser Opening (for OAuth)</h2>
+
+        <Tabs defaultValue="expo" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="expo">Expo</TabsTrigger>
+            <TabsTrigger value="native">React Native</TabsTrigger>
+            <TabsTrigger value="web">Web</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="expo">
+            <h4>Expo (Recommended)</h4>
+            <CodeBlock
+              language="typescript"
+              filename="expo-browser.tsx"
+              code={`import { openAuthSessionAsync } from 'expo-web-browser';
+
+const url = await aegisAccount.getAppleOAuthUrl('exp://192.168.1.16:8081');
+const result = await openAuthSessionAsync(url, 'exp://192.168.1.16:8081');
+await aegisAccount.handleOAuthCallback(result);`}
+            />
+          </TabsContent>
+
+          <TabsContent value="native">
+            <h4>React Native</h4>
+            <CodeBlock
+              language="typescript"
+              filename="native-browser.tsx"
+              code={`import { Linking } from 'react-native';
+
+const url = await aegisAccount.getAppleOAuthUrl('yourapp://callback');
+await Linking.openURL(url);
+// Handle the callback in your app`}
+            />
+          </TabsContent>
+
+          <TabsContent value="web">
+            <h4>Web</h4>
+            <CodeBlock
+              language="typescript"
+              filename="web-browser.tsx"
+              code={`const url = await aegisAccount.getAppleOAuthUrl('https://yourapp.com/callback');
+window.location.href = url;
+// Handle callback on your callback page`}
+            />
+          </TabsContent>
+        </Tabs>
+
+        <h2>Security & Storage</h2>
+
+        <div className="space-y-4 mb-6">
+          <Alert>
+            <Info className="h-4 w-4" />
+            <AlertDescription>
+              <strong>OAuth & Email/Password:</strong>
+              <br />No key storage needed - handled automatically
+              <br />Authentication tokens managed securely
+            </AlertDescription>
+          </Alert>
+
+          <Alert>
+            <Info className="h-4 w-4" />
+            <AlertDescription>
+              <strong>In-App Wallets:</strong>
+              <br />You must store private keys securely
+              <br />Client-side signing only
+              <br />Private keys never transmitted
+            </AlertDescription>
+          </Alert>
+        </div>
+
         <CodeBlock
           language="typescript"
-          filename="transactions.ts"
-          code={`// Single transaction (gasless)
-const result = await sdk.execute(
-  '0x123...contract_address',
-  'transfer',
-  ['0x456...recipient', '1000000000000000000'] // 1 ETH in wei
-);
+          filename="secure-storage.ts"
+          code={`// Example: Secure storage (React Native)
+import * as SecureStore from 'expo-secure-store';
 
-console.log('Transaction:', result.transactionHash);
+// Save private key
+const privateKey = await aegisAccount.deployAccount();
+await SecureStore.setItemAsync('wallet_key', privateKey);
 
-// Multiple transactions in one batch
-const calls = [
-  {
-    contractAddress: '0x123...token',
-    entrypoint: 'approve',
-    calldata: ['0x456...spender', '1000000000000000000']
-  },
-  {
-    contractAddress: '0x789...dex',
-    entrypoint: 'swap',
-    calldata: ['0x123...token_in', '0xabc...token_out', '1000000000000000000']
-  }
-];
-
-const batchResult = await sdk.executeBatch(calls);`}
-        />
-
-        <h3>Check Balances</h3>
-        <CodeBlock
-          language="typescript"
-          filename="balances.ts"
-          code={`// ETH balance
-const ethBalance = await sdk.getETHBalance();
-console.log('ETH:', ethBalance);
-
-// Token balance
-const tokenBalance = await sdk.getTokenBalance(
-  '0x123...token_address',
-  18 // decimals
-);
-console.log('Tokens:', tokenBalance);
-
-// NFTs
-const nfts = await sdk.getNFTs('0x123...nft_contract');`}
-        />
-
-        <h3>Read Contract Data</h3>
-        <CodeBlock
-          language="typescript"
-          filename="contract-calls.ts"
-          code={`// Call any contract function
-const result = await sdk.call(
-  '0x123...contract',
-  'balanceOf',
-  [sdk.address]
-);`}
-        />
-
-        <h2>Account Management</h2>
-
-        <CodeBlock
-          language="typescript"
-          filename="account-management.ts"
-          code={`// Check connection
-console.log('Connected:', sdk.isConnected);
-console.log('Address:', sdk.address);
-
-// Generate new private key
-const newKey = sdk.generateAccount();
-
-// Connect account
-await sdk.connectAccount(privateKey);
-
-// Deploy account
-await sdk.deployAccount();
-
-// Disconnect
-sdk.disconnect();`}
+// Load on app start
+const savedKey = await SecureStore.getItemAsync('wallet_key');
+if (savedKey) {
+  await aegisAccount.connectAccount(savedKey);
+}`}
         />
 
         <h2>Configuration</h2>
@@ -298,69 +533,15 @@ sdk.disconnect();`}
         <CodeBlock
           language="typescript"
           filename="config.ts"
-          code={`interface WalletConfig {
-  network: 'SN_MAINNET' | 'SN_SEPOLIA' | 'SN_DEVNET';
-  appName: string;
-  appId: string; // Required: Get from https://aegis.cavos.xyz
-
-  // Optional
-  paymasterApiKey?: string;        // For gasless transactions
-  rpcUrl?: string;                 // Custom RPC
-  enableLogging?: boolean;         // Debug logs (default: false)
-  maxRetries?: number;             // Transaction retries (default: 3)
-  trackingApiUrl?: string;         // Custom analytics URL
-}`}
+          code={`<AegisProvider
+  config={{
+    network: 'sepolia', // or 'mainnet'
+    appId: 'your-app-id', // Required: Get from https://aegis.cavos.xyz
+    paymasterApiKey: 'your-key', // Optional: For gasless transactions
+    enableLogging: true // Optional: For debugging
+  }}
+>`}
         />
-
-        <h2>Key Storage (Important!)</h2>
-
-        <Alert className="my-6">
-          <Info className="h-4 w-4" />
-          <AlertDescription>
-            <strong>Security Note:</strong> The SDK does NOT store private keys.
-            You must handle secure storage appropriately for your platform.
-          </AlertDescription>
-        </Alert>
-
-        <Tabs defaultValue="react-native-auto" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="react-native-auto">React Native/React (Auto)</TabsTrigger>
-            <TabsTrigger value="manual">Manual Storage</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="react-native-auto">
-            <CodeBlock
-              language="typescript"
-              filename="auto-storage.tsx"
-              code={`// React Native: Uses expo-secure-store automatically
-// React Web: Uses localStorage with encryption
-<AegisProvider config={...}>
-  {/* Your app - keys are stored securely automatically */}
-</AegisProvider>`}
-            />
-          </TabsContent>
-
-          <TabsContent value="manual">
-            <CodeBlock
-              language="typescript"
-              filename="manual-storage.ts"
-              code={`// Example with expo-secure-store
-import * as SecureStore from 'expo-secure-store';
-
-// Store
-await SecureStore.setItemAsync('wallet_key', privateKey);
-
-// Load
-const privateKey = await SecureStore.getItemAsync('wallet_key');
-if (privateKey) {
-  await sdk.connectAccount(privateKey);
-}
-
-// Remove
-await SecureStore.deleteItemAsync('wallet_key');`}
-            />
-          </TabsContent>
-        </Tabs>
 
         <h2>Error Handling</h2>
 
@@ -368,125 +549,54 @@ await SecureStore.deleteItemAsync('wallet_key');`}
           language="typescript"
           filename="error-handling.ts"
           code={`try {
-  const result = await sdk.execute(contract, method, params);
+  await aegisAccount.signIn('user@example.com', 'password');
+} catch (error) {
+  console.log('Login failed:', error.message);
+}
+
+try {
+  await aegisAccount.execute('0x123...', 'transfer', ['0x456...', '1000']);
 } catch (error) {
   if (error.message.includes('insufficient')) {
-    console.log('Not enough balance');
-  } else if (error.message.includes('nonce')) {
-    console.log('Transaction already sent');
+    console.log('Not enough money');
   } else {
     console.log('Transaction failed:', error.message);
   }
 }`}
         />
 
-        <h2>Utilities</h2>
-
-        <CodeBlock
-          language="typescript"
-          filename="utilities.ts"
-          code={`// Wait for transaction
-const confirmed = await sdk.waitForTransaction(txHash);
-
-// Check transaction status
-const status = await sdk.getTransactionStatus(txHash); // 'pending', 'confirmed', 'failed'
-
-// Estimate gas
-const gasEstimate = await sdk.estimateGas(contract, method, params);
-
-// Switch networks
-await sdk.switchNetwork('SN_MAINNET');`}
-        />
-
-        <h2>Platform Support</h2>
-
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 my-6">
-          <Card className="text-center p-4">
-            <Smartphone className="h-6 w-6 mx-auto mb-2 text-green-600" />
-            <p className="text-sm font-medium">React Native</p>
-          </Card>
-          <Card className="text-center p-4">
-            <Globe className="h-6 w-6 mx-auto mb-2 text-green-600" />
-            <p className="text-sm font-medium">Expo</p>
-          </Card>
-          <Card className="text-center p-4">
-            <Globe className="h-6 w-6 mx-auto mb-2 text-green-600" />
-            <p className="text-sm font-medium">React Web</p>
-          </Card>
-          <Card className="text-center p-4">
-            <Code className="h-6 w-6 mx-auto mb-2 text-green-600" />
-            <p className="text-sm font-medium">Node.js</p>
-          </Card>
-          <Card className="text-center p-4">
-            <Layers className="h-6 w-6 mx-auto mb-2 text-green-600" />
-            <p className="text-sm font-medium">TypeScript</p>
-          </Card>
-        </div>
-
-        <h2>Security Features</h2>
-
-        <div className="space-y-4">
-          <div className="flex items-start space-x-3">
-            <Shield className="h-5 w-5 text-green-600 mt-0.5" />
-            <div>
-              <h4 className="font-medium">Client-side signing only</h4>
-              <p className="text-sm text-muted-foreground">All signing happens on your device</p>
-            </div>
-          </div>
-          <div className="flex items-start space-x-3">
-            <Shield className="h-5 w-5 text-green-600 mt-0.5" />
-            <div>
-              <h4 className="font-medium">Private keys never transmitted</h4>
-              <p className="text-sm text-muted-foreground">Keys stay on your device</p>
-            </div>
-          </div>
-          <div className="flex items-start space-x-3">
-            <Shield className="h-5 w-5 text-green-600 mt-0.5" />
-            <div>
-              <h4 className="font-medium">Secure storage on device</h4>
-              <p className="text-sm text-muted-foreground">Uses platform-specific secure storage</p>
-            </div>
-          </div>
-          <div className="flex items-start space-x-3">
-            <Shield className="h-5 w-5 text-green-600 mt-0.5" />
-            <div>
-              <h4 className="font-medium">Privacy-first analytics</h4>
-              <p className="text-sm text-muted-foreground">No private data transmitted</p>
-            </div>
-          </div>
-        </div>
-
         <Card className="my-8 border-success/20 bg-success/5">
           <CardHeader>
             <CardTitle className="text-success flex items-center">
-              Ready to Build with Aegis!
+              Remember This!
               <ArrowRight className="h-4 w-4 ml-2" />
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground mb-4">
-              You now have everything you need to integrate Aegis SDK into
-              your mobile application with in-app wallets and gasless transactions.
+            <div className="space-y-2 text-sm">
+              <div><strong>1. AegisProvider</strong> wraps your app</div>
+              <div><strong>2. useAegis()</strong> gives you the hook</div>
+              <div><strong>3. aegisAccount</strong> is your wallet - use it for everything!</div>
+              <div><strong>4. Three login ways:</strong> OAuth, Email, or Create Wallet</div>
+              <div><strong>5. All transactions</strong> happen through aegisAccount.execute()</div>
+            </div>
+            <p className="text-sm text-muted-foreground mt-4">
+              That's it! Simple as that!
             </p>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 mt-4">
               <Badge variant="outline">
                 <a href="https://aegis.cavos.xyz" className="text-brand-primary">
                   Get App ID
                 </a>
               </Badge>
               <Badge variant="outline">
-                <a href="/quick-start" className="text-brand-primary">
-                  Quick Start
+                <a href="https://docs.cavos.xyz" className="text-brand-primary">
+                  Documentation
                 </a>
               </Badge>
               <Badge variant="outline">
-                <a href="/sdk/web" className="text-brand-primary">
-                  Web SDK
-                </a>
-              </Badge>
-              <Badge variant="outline">
-                <a href="/sdk/native" className="text-brand-primary">
-                  Native SDK
+                <a href="https://discord.gg/Vvq2ekEV47" className="text-brand-primary">
+                  Community Support
                 </a>
               </Badge>
             </div>
