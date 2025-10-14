@@ -12,10 +12,12 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Shield, Smartphone, Zap, Globe, Code, Layers, Info, ArrowRight } from "lucide-react";
+import { Shield, Smartphone, Zap, Globe, Code, Layers, Info, ArrowRight, AlertTriangle } from "lucide-react";
 
 const pageContent = `
 Simple SDK for Starknet wallets with **OAuth (Apple/Google)**, **Email/Password**, and **In-app wallets**. React and React Native compatible.
+
+Includes comprehensive **account management** methods for password reset, account deletion, and session recovery.
 
 ## How It Works (Super Simple!)
 
@@ -164,7 +166,7 @@ export default function App() {
   return (
     <AegisProvider
       config={{
-        network: 'sepolia',
+        network: 'SN_SEPOLIA',
         appId: 'your-app-id' // Get from https://aegis.cavos.xyz
       }}
     >
@@ -440,6 +442,560 @@ await aegisAccount.connectAccount('existing-private-key');`}
             />
           </TabsContent>
         </Tabs>
+
+        <h2>Account Management</h2>
+
+        <p className="mb-4">
+          The Aegis SDK provides three methods for managing social login accounts:
+        </p>
+
+        <ul className="list-disc list-inside space-y-2 mb-6 text-sm">
+          <li><strong>Password Reset</strong> - Trigger password reset emails for users who forgot their credentials</li>
+          <li><strong>Delete Account</strong> - Permanently delete user accounts and all associated data</li>
+          <li><strong>Session Recovery</strong> - Restore existing sessions using stored tokens</li>
+        </ul>
+
+        <Alert className="mb-6">
+          <Info className="h-4 w-4" />
+          <AlertDescription>
+            <strong>Note:</strong> These methods work exclusively with social login wallets (OAuth, Email/Password).
+            They are NOT available for in-app wallets.
+          </AlertDescription>
+        </Alert>
+
+        <Tabs defaultValue="password-reset" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="password-reset">Password Reset</TabsTrigger>
+            <TabsTrigger value="delete-account">Delete Account</TabsTrigger>
+            <TabsTrigger value="session-recovery">Session Recovery</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="password-reset" className="space-y-4">
+            <h4>Password Reset</h4>
+            <p className="text-sm text-muted-foreground">
+              Triggers a password reset email to the user. No authentication required.
+            </p>
+
+            <Alert>
+              <Info className="h-4 w-4" />
+              <AlertDescription>
+                <strong>Security Note:</strong> This method always returns a generic success message,
+                even if the email doesn't exist. This prevents user enumeration attacks.
+              </AlertDescription>
+            </Alert>
+
+            <CodeBlock
+              language="typescript"
+              filename="password-reset.ts"
+              code={`// Trigger password reset email
+const result = await aegisAccount.passwordReset('user@example.com');
+
+console.log(result.message);
+// "If an account exists for this email, a password reset link has been sent."
+console.log(result.timestamp); // 1234567890
+
+// Error handling
+try {
+  await aegisAccount.passwordReset(email);
+  alert('Check your email for password reset instructions');
+} catch (error) {
+  if (error.code === 'SOCIAL_LOGIN_ERROR') {
+    console.error('Password reset failed:', error.message);
+  }
+}`}
+            />
+
+            <div className="space-y-2 text-sm">
+              <h5 className="font-medium">Return Type</h5>
+              <CodeBlock
+                language="typescript"
+                filename="types.ts"
+                code={`interface PasswordResetResponse {
+  message: string;
+  timestamp: number;
+}`}
+              />
+            </div>
+
+            <div className="space-y-2 text-sm">
+              <h5 className="font-medium">Common Errors</h5>
+              <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                <li><code>SocialLoginError</code> - Network error or invalid request</li>
+                <li><code>ValidationError</code> - Invalid email format</li>
+              </ul>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="delete-account" className="space-y-4">
+            <h4>Delete Account</h4>
+            <p className="text-sm text-muted-foreground">
+              Permanently deletes the user's account from Auth0 and removes all wallet data.
+              Requires authentication.
+            </p>
+
+            <Alert variant="destructive">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>
+                <strong>Warning:</strong> This action is permanent and cannot be undone.
+                All wallet data, transaction history, and user information will be deleted.
+              </AlertDescription>
+            </Alert>
+
+            <CodeBlock
+              language="typescript"
+              filename="delete-account.ts"
+              code={`// Delete the current user's account
+const result = await aegisAccount.deleteAccount();
+
+console.log(result.user_id); // "auth0|123456"
+console.log(result.email); // "user@example.com"
+console.log(result.deletedWalletsCount); // 2
+
+// Local storage is automatically cleared after successful deletion
+
+// Error handling with token refresh
+try {
+  await aegisAccount.deleteAccount();
+  // Redirect to goodbye page
+  navigation.navigate('AccountDeleted');
+} catch (error) {
+  if (error.code === 'AUTHENTICATION_ERROR') {
+    // User needs to sign in again
+    console.error('Please sign in to delete your account');
+  } else if (error.code === 'SOCIAL_LOGIN_ERROR') {
+    console.error('Deletion failed:', error.message);
+  }
+}`}
+            />
+
+            <Alert>
+              <Info className="h-4 w-4" />
+              <AlertDescription>
+                <strong>Automatic Token Refresh:</strong> If your access token is expired,
+                the SDK will automatically refresh it using your refresh token before proceeding
+                with account deletion.
+              </AlertDescription>
+            </Alert>
+
+            <div className="space-y-2 text-sm">
+              <h5 className="font-medium">Return Type</h5>
+              <CodeBlock
+                language="typescript"
+                filename="types.ts"
+                code={`interface AccountDeleteResponse {
+  user_id: string;
+  email: string;
+  org_id: string;
+  deletedWalletsCount: number;
+  timestamp: number;
+  alreadyDeletedFromAuth0?: boolean; // True if already deleted
+}`}
+              />
+            </div>
+
+            <div className="space-y-2 text-sm">
+              <h5 className="font-medium">Common Errors</h5>
+              <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                <li><code>AuthenticationError</code> - User not authenticated or token invalid</li>
+                <li><code>SocialLoginError</code> - Network error or server issue</li>
+              </ul>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="session-recovery" className="space-y-4">
+            <h4>Session Recovery</h4>
+            <p className="text-sm text-muted-foreground">
+              Recovers an existing session using stored access tokens and updates the internal
+              aegisAccount state. Perfect for restoring user sessions when your app restarts.
+            </p>
+
+            <Alert>
+              <Info className="h-4 w-4" />
+              <AlertDescription>
+                <strong>Use Case:</strong> Call this when your app starts to check if the user
+                has an existing session. If the token is expired, it will automatically refresh
+                and update the stored tokens. After successful recovery, use aegisAccount methods
+                to access wallet data.
+              </AlertDescription>
+            </Alert>
+
+            <CodeBlock
+              language="typescript"
+              filename="session-recovery.ts"
+              code={`// Recover existing session on app start
+try {
+  // Recovers session and updates aegisAccount state
+  await aegisAccount.recoverSession();
+
+  // Access recovered data through aegisAccount
+  console.log(aegisAccount.address); // "0x123..."
+  console.log('Session recovered successfully');
+
+  // Navigate to main app
+  navigation.navigate('Home');
+} catch (error) {
+  if (error.code === 'AUTHENTICATION_ERROR') {
+    // No valid session - show login screen
+    console.log('No stored session, please sign in');
+    navigation.navigate('Login');
+  }
+}`}
+            />
+
+            <div className="space-y-2 text-sm">
+              <h5 className="font-medium">Return Type</h5>
+              <CodeBlock
+                language="typescript"
+                filename="types.ts"
+                code={`// Returns void - updates internal aegisAccount state
+async recoverSession(): Promise<void>
+
+// After recovery, access data through aegisAccount:
+aegisAccount.address        // Wallet address
+aegisAccount.isAuthenticated()  // Check if authenticated
+aegisAccount.getCurrentWallet() // Get full wallet data`}
+              />
+            </div>
+
+            <div className="space-y-2 text-sm">
+              <h5 className="font-medium">Common Errors</h5>
+              <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                <li><code>AuthenticationError</code> - No stored session or token invalid</li>
+                <li><code>SocialLoginError</code> - Network error or server issue</li>
+              </ul>
+            </div>
+          </TabsContent>
+        </Tabs>
+
+        <h3>Complete Integration Example</h3>
+
+        <p className="mb-4">
+          Here's a complete example showing how to use all three account management methods in a real application:
+        </p>
+
+        <CodeBlock
+          language="typescript"
+          filename="AccountManagement.tsx"
+          code={`import React, { useState, useEffect } from 'react';
+import { useAegis } from '@cavos/aegis';
+
+function AccountManagement() {
+  const { aegisAccount } = useAegis();
+  const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+
+  // Try to recover session on component mount
+  useEffect(() => {
+    const initSession = async () => {
+      try {
+        await aegisAccount.recoverSession();
+        console.log('Session recovered for:', aegisAccount.address);
+      } catch (error) {
+        console.log('No existing session');
+      }
+    };
+    initSession();
+  }, []);
+
+  // Password Reset Handler
+  const handlePasswordReset = async () => {
+    if (!email) {
+      setMessage('Please enter your email');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const result = await aegisAccount.passwordReset(email);
+      setMessage('Check your email for password reset instructions');
+    } catch (error) {
+      setMessage('Failed to send reset email. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Account Deletion Handler
+  const handleDeleteAccount = async () => {
+    const confirmed = confirm(
+      'Are you sure? This will permanently delete your account and cannot be undone.'
+    );
+
+    if (!confirmed) return;
+
+    setLoading(true);
+    try {
+      const result = await aegisAccount.deleteAccount();
+      setMessage(\`Account deleted. \${result.deletedWalletsCount} wallets removed.\`);
+
+      // Redirect to goodbye page after 2 seconds
+      setTimeout(() => {
+        window.location.href = '/goodbye';
+      }, 2000);
+    } catch (error) {
+      if (error.code === 'AUTHENTICATION_ERROR') {
+        setMessage('Please sign in to delete your account');
+      } else {
+        setMessage('Failed to delete account. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-6 p-4">
+      {/* Password Reset Section */}
+      <div className="border rounded-lg p-4">
+        <h3 className="text-lg font-semibold mb-2">Forgot Password?</h3>
+        <p className="text-sm text-gray-600 mb-4">
+          Enter your email to receive password reset instructions
+        </p>
+        <input
+          type="email"
+          placeholder="your@email.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full px-3 py-2 border rounded mb-2"
+        />
+        <button
+          onClick={handlePasswordReset}
+          disabled={loading}
+          className="px-4 py-2 bg-blue-500 text-white rounded"
+        >
+          Send Reset Email
+        </button>
+      </div>
+
+      {/* Account Deletion Section */}
+      <div className="border border-red-200 rounded-lg p-4">
+        <h3 className="text-lg font-semibold mb-2 text-red-600">
+          Delete Account
+        </h3>
+        <p className="text-sm text-gray-600 mb-4">
+          Permanently delete your account and all associated data.
+          This action cannot be undone.
+        </p>
+        <button
+          onClick={handleDeleteAccount}
+          disabled={loading}
+          className="px-4 py-2 bg-red-500 text-white rounded"
+        >
+          Delete My Account
+        </button>
+      </div>
+
+      {/* Status Message */}
+      {message && (
+        <div className="p-4 bg-blue-50 border border-blue-200 rounded">
+          <p>{message}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default AccountManagement;`}
+        />
+
+        <h3>Error Handling</h3>
+
+        <p className="mb-4">
+          All account management methods use consistent error handling patterns. Here's how to handle different error scenarios:
+        </p>
+
+        <CodeBlock
+          language="typescript"
+          filename="error-handling.ts"
+          code={`import {
+  AuthenticationError,
+  SocialLoginError,
+  ValidationError
+} from '@cavos/aegis';
+
+// Comprehensive error handling
+async function handleAccountOperation() {
+  try {
+    // Any account management method
+    await aegisAccount.deleteAccount();
+
+  } catch (error) {
+    // Check error type using code property
+    switch (error.code) {
+      case 'AUTHENTICATION_ERROR':
+        // User not authenticated or token expired
+        console.error('Authentication required:', error.message);
+        // Redirect to login
+        navigation.navigate('Login');
+        break;
+
+      case 'SOCIAL_LOGIN_ERROR':
+        // Network error or server issue
+        console.error('Operation failed:', error.message);
+        // Show retry option to user
+        showRetryDialog();
+        break;
+
+      case 'VALIDATION_ERROR':
+        // Invalid input (e.g., bad email format)
+        console.error('Invalid input:', error.message);
+        // Show validation error to user
+        setFieldError(error.message);
+        break;
+
+      default:
+        // Unexpected error
+        console.error('Unexpected error:', error);
+        showGenericErrorMessage();
+    }
+  }
+}
+
+// Check if error is recoverable
+function isRecoverableError(error: any): boolean {
+  return error.recoverable === true;
+}
+
+// Example: Retry logic for recoverable errors
+async function deleteAccountWithRetry(maxRetries = 3) {
+  let attempts = 0;
+
+  while (attempts < maxRetries) {
+    try {
+      return await aegisAccount.deleteAccount();
+    } catch (error) {
+      attempts++;
+
+      if (!isRecoverableError(error) || attempts >= maxRetries) {
+        throw error; // Give up
+      }
+
+      // Wait before retry (exponential backoff)
+      await new Promise(resolve =>
+        setTimeout(resolve, 1000 * Math.pow(2, attempts))
+      );
+    }
+  }
+}`}
+        />
+
+        <div className="my-6">
+          <h4 className="font-medium mb-2">Error Types</h4>
+          <div className="space-y-3">
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">AuthenticationError</CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm text-muted-foreground">
+                <p><strong>When:</strong> User not authenticated, token invalid, or no stored session</p>
+                <p><strong>Recoverable:</strong> No - User must sign in again</p>
+                <p><strong>Code:</strong> <code>AUTHENTICATION_ERROR</code></p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">SocialLoginError</CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm text-muted-foreground">
+                <p><strong>When:</strong> Network error, server issue, or API error</p>
+                <p><strong>Recoverable:</strong> Yes - Can retry the operation</p>
+                <p><strong>Code:</strong> <code>SOCIAL_LOGIN_ERROR</code></p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">ValidationError</CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm text-muted-foreground">
+                <p><strong>When:</strong> Invalid input (bad email format, etc.)</p>
+                <p><strong>Recoverable:</strong> No - User must correct input</p>
+                <p><strong>Code:</strong> <code>VALIDATION_ERROR</code></p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        <h3>Best Practices</h3>
+
+        <div className="space-y-4 my-6">
+          <Alert>
+            <Info className="h-4 w-4" />
+            <AlertDescription>
+              <strong>Session Recovery on App Start:</strong> Always call <code>recoverSession()</code>
+              when your app starts to restore existing sessions automatically. This provides a seamless
+              user experience without requiring re-authentication.
+            </AlertDescription>
+          </Alert>
+
+          <Alert>
+            <Info className="h-4 w-4" />
+            <AlertDescription>
+              <strong>User Confirmation for Deletion:</strong> Always require explicit user confirmation
+              before calling <code>deleteAccount()</code>. Consider using a confirmation dialog with
+              clear warnings about data loss.
+            </AlertDescription>
+          </Alert>
+
+          <Alert>
+            <Info className="h-4 w-4" />
+            <AlertDescription>
+              <strong>Password Reset UX:</strong> After calling <code>passwordReset()</code>, guide users
+              to check their email. The method returns immediately - the email is sent asynchronously by Auth0.
+            </AlertDescription>
+          </Alert>
+
+          <Alert>
+            <Info className="h-4 w-4" />
+            <AlertDescription>
+              <strong>Error Handling:</strong> Always wrap account management methods in try-catch blocks.
+              Check the <code>error.code</code> property to determine the appropriate user feedback.
+            </AlertDescription>
+          </Alert>
+        </div>
+
+        <CodeBlock
+          language="typescript"
+          filename="best-practices.ts"
+          code={`// ✅ Good: Session recovery on app mount
+useEffect(() => {
+  const restoreSession = async () => {
+    try {
+      await aegisAccount.recoverSession();
+      // Session recovered - aegisAccount state is now updated
+      setIsAuthenticated(true);
+    } catch {
+      // No session or recovery failed
+      setIsAuthenticated(false);
+    }
+  };
+  restoreSession();
+}, []);
+
+// ✅ Good: User confirmation for deletion
+const handleDelete = async () => {
+  const confirmed = window.confirm(
+    'Delete your account? This cannot be undone.'
+  );
+  if (confirmed) {
+    await aegisAccount.deleteAccount();
+  }
+};
+
+// ✅ Good: Clear feedback after password reset
+const handleReset = async (email) => {
+  await aegisAccount.passwordReset(email);
+  alert('Check your email for reset instructions');
+};
+
+// ❌ Bad: No error handling
+await aegisAccount.deleteAccount(); // Will crash on error
+
+// ❌ Bad: No user confirmation
+await aegisAccount.deleteAccount(); // Too dangerous!`}
+        />
 
         <h2>Browser Opening (for OAuth)</h2>
 
