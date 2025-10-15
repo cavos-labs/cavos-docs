@@ -29,18 +29,13 @@ export const DocFooter: React.FC = () => {
                 </a>
               </li>
               <li>
-                <a href="/api/auth" className="text-muted-foreground hover:text-foreground transition-colors">
-                  API Reference
+                <a href="/sdk/aegis" className="text-muted-foreground hover:text-foreground transition-colors">
+                  SDK Reference
                 </a>
               </li>
               <li>
-                <a href="/sdk/web" className="text-muted-foreground hover:text-foreground transition-colors">
+                <a href="/sdk/aegis" className="text-muted-foreground hover:text-foreground transition-colors">
                   SDKs
-                </a>
-              </li>
-              <li>
-                <a href="/guides/integration" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Guides
                 </a>
               </li>
             </ul>

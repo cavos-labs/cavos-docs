@@ -137,7 +137,7 @@ if (accessToken && userData) {
               Quick Start Guide
             </Button>
             <Button 
-              onClick={() => navigate('/sdk/web')}
+              onClick={() => navigate('/sdk/aegis')}
             >
               SDK Documentation
             </Button>

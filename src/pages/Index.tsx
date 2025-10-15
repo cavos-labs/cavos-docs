@@ -12,10 +12,7 @@ const Index = () => {
         <div className="text-center mb-12">
           <div className="flex items-center justify-center space-x-2 mb-6">
             <Badge variant="secondary" className="px-3 py-1">
-              Web SDK v1.2.32
-            </Badge>
-            <Badge variant="secondary" className="px-3 py-1">
-              Native SDK v1.3.3
+              Aegis SDK v0.1.13
             </Badge>
           </div>
 
@@ -79,9 +76,9 @@ const Index = () => {
                 <Smartphone className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold mb-2">Multi-Platform SDKs</h3>
+                <h3 className="font-semibold mb-2">Unified SDK</h3>
                 <p className="text-muted-foreground">
-                  Integration for Web and React Native
+                  Single SDK for Web and React Native applications
                 </p>
               </div>
             </div>
@@ -111,47 +108,32 @@ const Index = () => {
             </a>
 
             <a
-              href="/sdk/web"
+              href="/sdk/aegis"
               className="group p-6 rounded-lg border bg-card/50 hover:bg-card/80 transition-all duration-200 hover:shadow-md"
             >
               <div className="flex items-center justify-between mb-3">
                 <h3 className="font-semibold group-hover:text-primary transition-colors">
-                  Web SDK
+                  Aegis SDK
                 </h3>
                 <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
               </div>
               <p className="text-sm text-muted-foreground">
-                Complete API reference
+                Complete SDK documentation
               </p>
             </a>
 
             <a
-              href="/sdk/native"
+              href="/auth/overview"
               className="group p-6 rounded-lg border bg-card/50 hover:bg-card/80 transition-all duration-200 hover:shadow-md"
             >
               <div className="flex items-center justify-between mb-3">
                 <h3 className="font-semibold group-hover:text-primary transition-colors">
-                  React Native SDK
+                  Authentication
                 </h3>
                 <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
               </div>
               <p className="text-sm text-muted-foreground">
-                Mobile development
-              </p>
-            </a>
-
-            <a
-              href="/guides/token-swapping"
-              className="group p-6 rounded-lg border bg-card/50 hover:bg-card/80 transition-all duration-200 hover:shadow-md"
-            >
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold group-hover:text-primary transition-colors">
-                  Token Swapping
-                </h3>
-                <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
-              </div>
-              <p className="text-sm text-muted-foreground">
-                AVNU DEX integration
+                Auth0 integration guide
               </p>
             </a>
           </div>

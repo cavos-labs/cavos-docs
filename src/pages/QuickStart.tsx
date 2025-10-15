@@ -15,20 +15,17 @@ const QuickStart = () => {
         <Alert className="mb-8">
           <Info className="h-4 w-4" />
           <AlertDescription>
-            <strong>Requirements:</strong> Node.js 16+, basic TypeScript knowledge, account at services.cavos.xyz
+            <strong>Requirements:</strong> Node.js 16+, basic TypeScript knowledge, account at services.cavos.xyz, and the latest Aegis SDK v0.1.13
           </AlertDescription>
         </Alert>
 
-        <h2>1. Install SDK</h2>
+        <h2>1. Install Aegis SDK</h2>
         
         <div className="my-6">
-          <TerminalBlock command="npm install cavos-service-sdk" />
+          <TerminalBlock command="npm install @cavos/aegis" />
         </div>
         
-        <p className="mb-4">For React Native:</p>
-        <div className="my-6">
-          <TerminalBlock command="npm install cavos-service-native" />
-        </div>
+        <p className="mb-4">The Aegis SDK works for both Web and React Native applications.</p>
 
         <h2>2. Get Credentials</h2>
         
@@ -44,9 +41,12 @@ const QuickStart = () => {
         <div className="my-6">
           <CodeBlock
             language="typescript"
-            code={`import { CavosAuth } from 'cavos-service-sdk';
+            code={`import { AegisSDK } from '@cavos/aegis';
 
-const cavosAuth = new CavosAuth('sepolia', 'your-app-id');`}
+const aegis = new AegisSDK({
+  network: 'sepolia',
+  appId: 'your-app-id'
+});`}
           />
         </div>
 
@@ -55,18 +55,28 @@ const cavosAuth = new CavosAuth('sepolia', 'your-app-id');`}
         <div className="my-6">
           <CodeBlock
             language="typescript"
-            code={`const result = await cavosAuth.signUp(
-  'user@example.com',
-  'MyPassword123',
-  'your-org-secret'
-);
+            code={`const result = await aegis.auth.register({
+  email: 'user@example.com',
+  password: 'MyPassword123',
+  organizationSecret: 'your-org-secret'
+});
 
 console.log('Wallet address:', result.wallet.address);
-console.log('Access token:', result.access_token);`}
+console.log('Access token:', result.accessToken);`}
           />
         </div>
 
-        <p>This automatically creates a Starknet wallet for the user.</p>
+        <p>This automatically creates a Starknet wallet for the user using the Aegis SDK.</p>
+        
+        <h3>Key Features of Aegis SDK v0.1.13</h3>
+        
+        <ul>
+          <li><strong>Unified API</strong> - Same SDK for Web and React Native</li>
+          <li><strong>Gasless Transactions</strong> - Automatic gas fee handling via AVNU paymaster</li>
+          <li><strong>Auth0 Integration</strong> - Seamless authentication flow</li>
+          <li><strong>ArgentX Smart Accounts</strong> - Deploy smart wallets automatically</li>
+          <li><strong>Token Swapping</strong> - Built-in DEX integration</li>
+        </ul>
 
         <h2>5. Execute Transactions</h2>
         
@@ -75,15 +85,15 @@ console.log('Access token:', result.access_token);`}
         <div className="my-6">
           <CodeBlock
             language="typescript"
-            code={`const result = await cavosAuth.executeCalls(
-  result.wallet.address,
-  [{
+            code={`const result = await aegis.wallet.executeSession({
+  walletAddress: result.wallet.address,
+  calls: [{
     contractAddress: '0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d',
     entrypoint: 'transfer',
     calldata: ['0x123...', '1000000000000000000', '0']
   }],
-  result.access_token
-);
+  accessToken: result.accessToken
+});
 
 console.log('TX Hash:', result.txHash);`}
           />
@@ -98,10 +108,9 @@ console.log('TX Hash:', result.txHash);`}
         <h2>Next Steps</h2>
         
         <ul>
-          <li><a href="/sdk/web">Web SDK Reference</a> - Complete API documentation</li>
-          <li><a href="/sdk/native">React Native SDK</a> - Mobile development</li>
-          <li><a href="/guides/token-swapping">Token Swapping</a> - AVNU DEX integration</li>
-          <li><a href="/guides/authentication">Authentication Guide</a> - JWT flow details</li>
+          <li><a href="/auth/overview">Authentication Overview</a> - Complete auth flow details</li>
+          <li><a href="/sdk/aegis">Aegis SDK Documentation</a> - Full API reference</li>
+          <li><a href="/auth/demo">Auth Demo</a> - Interactive authentication example</li>
         </ul>
 
         <p>Register your organization at <a href="https://services.cavos.xyz">services.cavos.xyz</a> to get started.</p>

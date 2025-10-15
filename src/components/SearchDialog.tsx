@@ -26,32 +26,20 @@ const searchData: SearchResult[] = [
   { title: 'Authentication Guide', url: '/auth/overview', type: 'page', description: 'Auth0 integration overview', category: 'Authentication' },
   
   // SDKs
-  { title: 'Web SDK', url: '/sdk/web', type: 'page', description: 'JavaScript/TypeScript SDK for web applications', category: 'SDKs' },
-  { title: 'React Native SDK', url: '/sdk/native', type: 'page', description: 'Mobile SDK with biometric authentication', category: 'SDKs' },
   
   // API Reference
-  { title: 'Authentication API', url: '/api/auth', type: 'api', description: 'User registration, login, and token management', category: 'API Reference' },
-  { title: 'Wallet & Transactions API', url: '/api/wallet', type: 'api', description: 'Wallet deployment and transaction execution', category: 'API Reference' },
   
   // External
   { title: 'Organization Setup', url: 'https://services.cavos.xyz', type: 'external', description: 'Register your organization', category: 'External' },
   
   // API Endpoints
-  { title: 'POST /auth/register', url: '/api/auth', type: 'api', description: 'Register a new user with automatic wallet deployment', category: 'Auth Endpoints' },
-  { title: 'POST /auth/login', url: '/api/auth', type: 'api', description: 'Authenticate an existing user', category: 'Auth Endpoints' },
-  { title: 'GET /auth/apple', url: '/api/auth', type: 'api', description: 'Initialize Apple Sign In flow', category: 'Auth Endpoints' },
-  { title: 'GET /auth/google', url: '/api/auth', type: 'api', description: 'Initialize Google OAuth flow', category: 'Auth Endpoints' },
-  { title: 'POST /auth/refresh', url: '/api/auth', type: 'api', description: 'Refresh an expired access token', category: 'Auth Endpoints' },
-  { title: 'POST /deploy', url: '/api/wallet', type: 'api', description: 'Deploy ArgentX smart account on Starknet', category: 'Wallet Endpoints' },
-  { title: 'POST /execute/session', url: '/api/wallet', type: 'api', description: 'Execute contract calls with gas fee handling', category: 'Wallet Endpoints' },
-  { title: 'POST /execute/session/swap', url: '/api/wallet', type: 'api', description: 'Token swaps using AVNU integration', category: 'Wallet Endpoints' },
   
   // Concepts
   { title: 'Starknet Integration', url: '/quick-start', type: 'section', description: 'ArgentX smart accounts on Starknet', category: 'Concepts' },
-  { title: 'Biometric Authentication', url: '/sdk/native', type: 'section', description: 'Face ID and Touch ID integration', category: 'Concepts' },
-  { title: 'AVNU Paymaster', url: '/api/wallet', type: 'section', description: 'Automatic gas fee abstraction', category: 'Concepts' },
-  { title: 'Token Management', url: '/sdk/web', type: 'section', description: 'Access and refresh token handling', category: 'Concepts' },
-  { title: 'Organization Secret', url: '/api/auth', type: 'section', description: 'Backend authentication for registration/login', category: 'Concepts' },
+  { title: 'Biometric Authentication', url: '/sdk/aegis', type: 'section', description: 'Face ID and Touch ID integration', category: 'Concepts' },
+  { title: 'AVNU Paymaster', url: '/sdk/aegis', type: 'section', description: 'Automatic gas fee abstraction', category: 'Concepts' },
+  { title: 'Token Management', url: '/sdk/aegis', type: 'section', description: 'Access and refresh token handling', category: 'Concepts' },
+  { title: 'Organization Secret', url: '/sdk/aegis', type: 'section', description: 'Backend authentication for registration/login', category: 'Concepts' },
 ];
 
 interface SearchDialogProps {

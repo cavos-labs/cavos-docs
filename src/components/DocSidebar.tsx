@@ -2,17 +2,8 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import {
   Home,
-  BookOpen,
-  Key,
-  Code,
-  Smartphone,
-  Globe,
   Zap,
   Shield,
-  Wallet,
-  ArrowUpDown,
-  Lock,
-  AlertCircle,
   ChevronRight,
 } from "lucide-react";
 import {
@@ -44,34 +35,11 @@ const navigationItems = [
   {
     title: "SDKs",
     items: [
-      { title: "Web SDK (v1.2.32)", url: "/sdk/web", icon: Globe },
-      {
-        title: "React Native SDK (v1.3.3)",
-        url: "/sdk/native",
-        icon: Smartphone,
-      },
       {
         title: "Aegis SDK (v0.1.13)",
         url: "/sdk/aegis",
         icon: Shield,
       },
-    ],
-  },
-  {
-    title: "Guides",
-    items: [
-      {
-        title: "Token Swapping",
-        url: "/guides/token-swapping",
-        icon: ArrowUpDown,
-      },
-    ],
-  },
-  {
-    title: "API Reference",
-    items: [
-      { title: "Authentication API", url: "/api/auth", icon: Key },
-      { title: "Wallet & Transactions", url: "/api/wallet", icon: Wallet },
     ],
   },
 ];
