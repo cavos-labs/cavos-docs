@@ -9,8 +9,15 @@ const Installation = () => {
     <DocLayout>
       <div className="doc-content">
         <h1>Installation</h1>
-        
+
         <p>Install Cavos Service SDKs for Web and React Native.</p>
+
+        <Alert className="my-6">
+          <Info className="h-4 w-4" />
+          <AlertDescription>
+            <strong>Recommended:</strong> Node.js version 24 or higher for optimal performance and compatibility.
+          </AlertDescription>
+        </Alert>
 
         <h2>Web SDK</h2>
         <div className="my-6">
