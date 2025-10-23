@@ -1,11 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import {
-  Home,
-  Zap,
-  Shield,
-  ChevronRight,
-} from "lucide-react";
+import { Home, Zap, Shield, ChevronRight, Code } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -42,6 +37,21 @@ const navigationItems = [
       },
     ],
   },
+  {
+    title: "Templates",
+    items: [
+      {
+        title: "Web Template",
+        url: "/templates/web",
+        icon: Code,
+      },
+      {
+        title: "Mobile Template",
+        url: "/templates/mobile",
+        icon: Code,
+      },
+    ],
+  },
 ];
 
 export const DocSidebar: React.FC = () => {
@@ -70,31 +80,19 @@ export const DocSidebar: React.FC = () => {
                       {section.items.map((item) => (
                         <SidebarMenuItem key={item.title}>
                           <SidebarMenuButton asChild>
-                            {item.external ? (
-                              <a
-                                href={item.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center space-x-3 px-3 py-2 rounded-md text-sm transition-all text-nav-foreground hover:bg-nav-hover hover:text-nav-active"
-                              >
-                                <item.icon className="h-4 w-4 flex-shrink-0" />
-                                {!collapsed && <span>{item.title}</span>}
-                              </a>
-                            ) : (
-                              <NavLink
-                                to={item.url}
-                                className={({ isActive }) =>
-                                  `flex items-center space-x-3 px-3 py-2 rounded-md text-sm transition-all ${
-                                    isActive
-                                      ? "bg-nav-active/10 text-nav-active border-r-2 border-nav-active"
-                                      : "text-nav-foreground hover:bg-nav-hover hover:text-nav-active"
-                                  }`
-                                }
-                              >
-                                <item.icon className="h-4 w-4 flex-shrink-0" />
-                                {!collapsed && <span>{item.title}</span>}
-                              </NavLink>
-                            )}
+                            <NavLink
+                              to={item.url}
+                              className={({ isActive }) =>
+                                `flex items-center space-x-3 px-3 py-2 rounded-md text-sm transition-all ${
+                                  isActive
+                                    ? "bg-nav-active/10 text-nav-active border-r-2 border-nav-active"
+                                    : "text-nav-foreground hover:bg-nav-hover hover:text-nav-active"
+                                }`
+                              }
+                            >
+                              <item.icon className="h-4 w-4 flex-shrink-0" />
+                              {!collapsed && <span>{item.title}</span>}
+                            </NavLink>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                       ))}

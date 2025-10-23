@@ -12,7 +12,17 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Shield, Smartphone, Zap, Globe, Code, Layers, Info, ArrowRight, AlertTriangle } from "lucide-react";
+import {
+  Shield,
+  Smartphone,
+  Zap,
+  Globe,
+  Code,
+  Layers,
+  Info,
+  ArrowRight,
+  AlertTriangle,
+} from "lucide-react";
 
 const pageContent = `
 Simple SDK for Starknet wallets with **OAuth (Apple/Google)**, **Email/Password**, and **In-app wallets**. React and React Native compatible.
@@ -55,16 +65,19 @@ const AegisSDK = () => {
         </div>
 
         <p>
-          Simple SDK for Starknet wallets with <strong>OAuth (Apple/Google)</strong>,
-          <strong> Email/Password</strong>, and <strong>In-app wallets</strong>. Works with both
-          <strong> React Native/Expo</strong> and <strong>React web applications</strong>.
+          Simple SDK for Starknet wallets with{" "}
+          <strong>OAuth (Apple/Google)</strong>,<strong> Email/Password</strong>
+          , and <strong>In-app wallets</strong>. Works with both
+          <strong> React Native/Expo</strong> and{" "}
+          <strong>React web applications</strong>.
         </p>
 
         <Alert className="my-6">
           <Info className="h-4 w-4" />
           <AlertDescription>
-            <strong>Remember:</strong> Everything happens through the <code>aegisAccount</code> object.
-            It's your main wallet - use it for login, transactions, and everything else!
+            <strong>Remember:</strong> Everything happens through the{" "}
+            <code>aegisAccount</code> object. It's your main wallet - use it for
+            login, transactions, and everything else!
           </AlertDescription>
         </Alert>
 
@@ -81,7 +94,9 @@ const AegisSDK = () => {
             <CardHeader>
               <Code className="h-8 w-8 mx-auto text-brand-secondary mb-2" />
               <CardTitle className="text-base">useAegis Hook</CardTitle>
-              <CardDescription>Get aegisAccount in any component</CardDescription>
+              <CardDescription>
+                Get aegisAccount in any component
+              </CardDescription>
             </CardHeader>
           </Card>
 
@@ -124,24 +139,38 @@ const AegisSDK = () => {
 
         <div className="space-y-4 my-6">
           <div className="flex items-start space-x-3">
-            <div className="bg-brand-primary/10 text-brand-primary rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">1</div>
+            <div className="bg-brand-primary/10 text-brand-primary rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">
+              1
+            </div>
             <div>
               <h4 className="font-medium">Wrap your app with AegisProvider</h4>
-              <p className="text-sm text-muted-foreground">This gives your whole app access to wallet context</p>
+              <p className="text-sm text-muted-foreground">
+                This gives your whole app access to wallet context
+              </p>
             </div>
           </div>
           <div className="flex items-start space-x-3">
-            <div className="bg-brand-primary/10 text-brand-primary rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">2</div>
+            <div className="bg-brand-primary/10 text-brand-primary rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">
+              2
+            </div>
             <div>
-              <h4 className="font-medium">Use useAegis() hook in any component</h4>
-              <p className="text-sm text-muted-foreground">This gives you the aegisAccount object</p>
+              <h4 className="font-medium">
+                Use useAegis() hook in any component
+              </h4>
+              <p className="text-sm text-muted-foreground">
+                This gives you the aegisAccount object
+              </p>
             </div>
           </div>
           <div className="flex items-start space-x-3">
-            <div className="bg-brand-primary/10 text-brand-primary rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">3</div>
+            <div className="bg-brand-primary/10 text-brand-primary rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">
+              3
+            </div>
             <div>
               <h4 className="font-medium">Use aegisAccount for everything</h4>
-              <p className="text-sm text-muted-foreground">Login, transactions, balances - all through aegisAccount</p>
+              <p className="text-sm text-muted-foreground">
+                Login, transactions, balances - all through aegisAccount
+              </p>
             </div>
           </div>
         </div>
@@ -303,7 +332,8 @@ function WalletApp() {
         <h2>The aegisAccount Object (Most Important!)</h2>
 
         <p className="mb-4">
-          <strong>This is your main wallet object.</strong> Everything happens through <code>aegisAccount</code>:
+          <strong>This is your main wallet object.</strong> Everything happens
+          through <code>aegisAccount</code>:
         </p>
 
         <Tabs defaultValue="login" className="w-full">
@@ -446,20 +476,31 @@ await aegisAccount.connectAccount('existing-private-key');`}
         <h2>Account Management</h2>
 
         <p className="mb-4">
-          The Aegis SDK provides three methods for managing social login accounts:
+          The Aegis SDK provides three methods for managing social login
+          accounts:
         </p>
 
         <ul className="list-disc list-inside space-y-2 mb-6 text-sm">
-          <li><strong>Password Reset</strong> - Trigger password reset emails for users who forgot their credentials</li>
-          <li><strong>Delete Account</strong> - Permanently delete user accounts and all associated data</li>
-          <li><strong>Session Recovery</strong> - Restore existing sessions using stored tokens</li>
+          <li>
+            <strong>Password Reset</strong> - Trigger password reset emails for
+            users who forgot their credentials
+          </li>
+          <li>
+            <strong>Delete Account</strong> - Permanently delete user accounts
+            and all associated data
+          </li>
+          <li>
+            <strong>Session Recovery</strong> - Restore existing sessions using
+            stored tokens
+          </li>
         </ul>
 
         <Alert className="mb-6">
           <Info className="h-4 w-4" />
           <AlertDescription>
-            <strong>Note:</strong> These methods work exclusively with social login wallets (OAuth, Email/Password).
-            They are NOT available for in-app wallets.
+            <strong>Note:</strong> These methods work exclusively with social
+            login wallets (OAuth, Email/Password). They are NOT available for
+            in-app wallets.
           </AlertDescription>
         </Alert>
 
@@ -473,14 +514,16 @@ await aegisAccount.connectAccount('existing-private-key');`}
           <TabsContent value="password-reset" className="space-y-4">
             <h4>Password Reset</h4>
             <p className="text-sm text-muted-foreground">
-              Triggers a password reset email to the user. No authentication required.
+              Triggers a password reset email to the user. No authentication
+              required.
             </p>
 
             <Alert>
               <Info className="h-4 w-4" />
               <AlertDescription>
-                <strong>Security Note:</strong> This method always returns a generic success message,
-                even if the email doesn't exist. This prevents user enumeration attacks.
+                <strong>Security Note:</strong> This method always returns a
+                generic success message, even if the email doesn't exist. This
+                prevents user enumeration attacks.
               </AlertDescription>
             </Alert>
 
@@ -520,8 +563,13 @@ try {
             <div className="space-y-2 text-sm">
               <h5 className="font-medium">Common Errors</h5>
               <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                <li><code>SocialLoginError</code> - Network error or invalid request</li>
-                <li><code>ValidationError</code> - Invalid email format</li>
+                <li>
+                  <code>SocialLoginError</code> - Network error or invalid
+                  request
+                </li>
+                <li>
+                  <code>ValidationError</code> - Invalid email format
+                </li>
               </ul>
             </div>
           </TabsContent>
@@ -529,15 +577,16 @@ try {
           <TabsContent value="delete-account" className="space-y-4">
             <h4>Delete Account</h4>
             <p className="text-sm text-muted-foreground">
-              Permanently deletes the user's account from Auth0 and removes all wallet data.
-              Requires authentication.
+              Permanently deletes the user's account from Auth0 and removes all
+              wallet data. Requires authentication.
             </p>
 
             <Alert variant="destructive">
               <AlertTriangle className="h-4 w-4" />
               <AlertDescription>
-                <strong>Warning:</strong> This action is permanent and cannot be undone.
-                All wallet data, transaction history, and user information will be deleted.
+                <strong>Warning:</strong> This action is permanent and cannot be
+                undone. All wallet data, transaction history, and user
+                information will be deleted.
               </AlertDescription>
             </Alert>
 
@@ -571,9 +620,9 @@ try {
             <Alert>
               <Info className="h-4 w-4" />
               <AlertDescription>
-                <strong>Automatic Token Refresh:</strong> If your access token is expired,
-                the SDK will automatically refresh it using your refresh token before proceeding
-                with account deletion.
+                <strong>Automatic Token Refresh:</strong> If your access token
+                is expired, the SDK will automatically refresh it using your
+                refresh token before proceeding with account deletion.
               </AlertDescription>
             </Alert>
 
@@ -596,8 +645,13 @@ try {
             <div className="space-y-2 text-sm">
               <h5 className="font-medium">Common Errors</h5>
               <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                <li><code>AuthenticationError</code> - User not authenticated or token invalid</li>
-                <li><code>SocialLoginError</code> - Network error or server issue</li>
+                <li>
+                  <code>AuthenticationError</code> - User not authenticated or
+                  token invalid
+                </li>
+                <li>
+                  <code>SocialLoginError</code> - Network error or server issue
+                </li>
               </ul>
             </div>
           </TabsContent>
@@ -605,17 +659,19 @@ try {
           <TabsContent value="session-recovery" className="space-y-4">
             <h4>Session Recovery</h4>
             <p className="text-sm text-muted-foreground">
-              Recovers an existing session using stored access tokens and updates the internal
-              aegisAccount state. Perfect for restoring user sessions when your app restarts.
+              Recovers an existing session using stored access tokens and
+              updates the internal aegisAccount state. Perfect for restoring
+              user sessions when your app restarts.
             </p>
 
             <Alert>
               <Info className="h-4 w-4" />
               <AlertDescription>
-                <strong>Use Case:</strong> Call this when your app starts to check if the user
-                has an existing session. If the token is expired, it will automatically refresh
-                and update the stored tokens. After successful recovery, use aegisAccount methods
-                to access wallet data.
+                <strong>Use Case:</strong> Call this when your app starts to
+                check if the user has an existing session. If the token is
+                expired, it will automatically refresh and update the stored
+                tokens. After successful recovery, use aegisAccount methods to
+                access wallet data.
               </AlertDescription>
             </Alert>
 
@@ -660,444 +716,17 @@ aegisAccount.getCurrentWallet() // Get full wallet data`}
             <div className="space-y-2 text-sm">
               <h5 className="font-medium">Common Errors</h5>
               <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                <li><code>AuthenticationError</code> - No stored session or token invalid</li>
-                <li><code>SocialLoginError</code> - Network error or server issue</li>
+                <li>
+                  <code>AuthenticationError</code> - No stored session or token
+                  invalid
+                </li>
+                <li>
+                  <code>SocialLoginError</code> - Network error or server issue
+                </li>
               </ul>
             </div>
           </TabsContent>
         </Tabs>
-
-        <h3>Complete Integration Example</h3>
-
-        <p className="mb-4">
-          Here's a complete example showing how to use all three account management methods in a real application:
-        </p>
-
-        <CodeBlock
-          language="typescript"
-          filename="AccountManagement.tsx"
-          code={`import React, { useState, useEffect } from 'react';
-import { useAegis } from '@cavos/aegis';
-
-function AccountManagement() {
-  const { aegisAccount } = useAegis();
-  const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
-
-  // Try to recover session on component mount
-  useEffect(() => {
-    const initSession = async () => {
-      try {
-        await aegisAccount.recoverSession();
-        console.log('Session recovered for:', aegisAccount.address);
-      } catch (error) {
-        console.log('No existing session');
-      }
-    };
-    initSession();
-  }, []);
-
-  // Password Reset Handler
-  const handlePasswordReset = async () => {
-    if (!email) {
-      setMessage('Please enter your email');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const result = await aegisAccount.passwordReset(email);
-      setMessage('Check your email for password reset instructions');
-    } catch (error) {
-      setMessage('Failed to send reset email. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Account Deletion Handler
-  const handleDeleteAccount = async () => {
-    const confirmed = confirm(
-      'Are you sure? This will permanently delete your account and cannot be undone.'
-    );
-
-    if (!confirmed) return;
-
-    setLoading(true);
-    try {
-      const result = await aegisAccount.deleteAccount();
-      setMessage(\`Account deleted. \${result.deletedWalletsCount} wallets removed.\`);
-
-      // Redirect to goodbye page after 2 seconds
-      setTimeout(() => {
-        window.location.href = '/goodbye';
-      }, 2000);
-    } catch (error) {
-      if (error.code === 'AUTHENTICATION_ERROR') {
-        setMessage('Please sign in to delete your account');
-      } else {
-        setMessage('Failed to delete account. Please try again.');
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <div className="space-y-6 p-4">
-      {/* Password Reset Section */}
-      <div className="border rounded-lg p-4">
-        <h3 className="text-lg font-semibold mb-2">Forgot Password?</h3>
-        <p className="text-sm text-gray-600 mb-4">
-          Enter your email to receive password reset instructions
-        </p>
-        <input
-          type="email"
-          placeholder="your@email.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-3 py-2 border rounded mb-2"
-        />
-        <button
-          onClick={handlePasswordReset}
-          disabled={loading}
-          className="px-4 py-2 bg-blue-500 text-white rounded"
-        >
-          Send Reset Email
-        </button>
-      </div>
-
-      {/* Account Deletion Section */}
-      <div className="border border-red-200 rounded-lg p-4">
-        <h3 className="text-lg font-semibold mb-2 text-red-600">
-          Delete Account
-        </h3>
-        <p className="text-sm text-gray-600 mb-4">
-          Permanently delete your account and all associated data.
-          This action cannot be undone.
-        </p>
-        <button
-          onClick={handleDeleteAccount}
-          disabled={loading}
-          className="px-4 py-2 bg-red-500 text-white rounded"
-        >
-          Delete My Account
-        </button>
-      </div>
-
-      {/* Status Message */}
-      {message && (
-        <div className="p-4 bg-blue-50 border border-blue-200 rounded">
-          <p>{message}</p>
-        </div>
-      )}
-    </div>
-  );
-}
-
-export default AccountManagement;`}
-        />
-
-        <h3>Error Handling</h3>
-
-        <p className="mb-4">
-          All account management methods use consistent error handling patterns. Here's how to handle different error scenarios:
-        </p>
-
-        <CodeBlock
-          language="typescript"
-          filename="error-handling.ts"
-          code={`import {
-  AuthenticationError,
-  SocialLoginError,
-  ValidationError
-} from '@cavos/aegis';
-
-// Comprehensive error handling
-async function handleAccountOperation() {
-  try {
-    // Any account management method
-    await aegisAccount.deleteAccount();
-
-  } catch (error) {
-    // Check error type using code property
-    switch (error.code) {
-      case 'AUTHENTICATION_ERROR':
-        // User not authenticated or token expired
-        console.error('Authentication required:', error.message);
-        // Redirect to login
-        navigation.navigate('Login');
-        break;
-
-      case 'SOCIAL_LOGIN_ERROR':
-        // Network error or server issue
-        console.error('Operation failed:', error.message);
-        // Show retry option to user
-        showRetryDialog();
-        break;
-
-      case 'VALIDATION_ERROR':
-        // Invalid input (e.g., bad email format)
-        console.error('Invalid input:', error.message);
-        // Show validation error to user
-        setFieldError(error.message);
-        break;
-
-      default:
-        // Unexpected error
-        console.error('Unexpected error:', error);
-        showGenericErrorMessage();
-    }
-  }
-}
-
-// Check if error is recoverable
-function isRecoverableError(error: any): boolean {
-  return error.recoverable === true;
-}
-
-// Example: Retry logic for recoverable errors
-async function deleteAccountWithRetry(maxRetries = 3) {
-  let attempts = 0;
-
-  while (attempts < maxRetries) {
-    try {
-      return await aegisAccount.deleteAccount();
-    } catch (error) {
-      attempts++;
-
-      if (!isRecoverableError(error) || attempts >= maxRetries) {
-        throw error; // Give up
-      }
-
-      // Wait before retry (exponential backoff)
-      await new Promise(resolve =>
-        setTimeout(resolve, 1000 * Math.pow(2, attempts))
-      );
-    }
-  }
-}`}
-        />
-
-        <div className="my-6">
-          <h4 className="font-medium mb-2">Error Types</h4>
-          <div className="space-y-3">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm">AuthenticationError</CardTitle>
-              </CardHeader>
-              <CardContent className="text-sm text-muted-foreground">
-                <p><strong>When:</strong> User not authenticated, token invalid, or no stored session</p>
-                <p><strong>Recoverable:</strong> No - User must sign in again</p>
-                <p><strong>Code:</strong> <code>AUTHENTICATION_ERROR</code></p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm">SocialLoginError</CardTitle>
-              </CardHeader>
-              <CardContent className="text-sm text-muted-foreground">
-                <p><strong>When:</strong> Network error, server issue, or API error</p>
-                <p><strong>Recoverable:</strong> Yes - Can retry the operation</p>
-                <p><strong>Code:</strong> <code>SOCIAL_LOGIN_ERROR</code></p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm">ValidationError</CardTitle>
-              </CardHeader>
-              <CardContent className="text-sm text-muted-foreground">
-                <p><strong>When:</strong> Invalid input (bad email format, etc.)</p>
-                <p><strong>Recoverable:</strong> No - User must correct input</p>
-                <p><strong>Code:</strong> <code>VALIDATION_ERROR</code></p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        <h3>Best Practices</h3>
-
-        <div className="space-y-4 my-6">
-          <Alert>
-            <Info className="h-4 w-4" />
-            <AlertDescription>
-              <strong>Session Recovery on App Start:</strong> Always call <code>recoverSession()</code>
-              when your app starts to restore existing sessions automatically. This provides a seamless
-              user experience without requiring re-authentication.
-            </AlertDescription>
-          </Alert>
-
-          <Alert>
-            <Info className="h-4 w-4" />
-            <AlertDescription>
-              <strong>User Confirmation for Deletion:</strong> Always require explicit user confirmation
-              before calling <code>deleteAccount()</code>. Consider using a confirmation dialog with
-              clear warnings about data loss.
-            </AlertDescription>
-          </Alert>
-
-          <Alert>
-            <Info className="h-4 w-4" />
-            <AlertDescription>
-              <strong>Password Reset UX:</strong> After calling <code>passwordReset()</code>, guide users
-              to check their email. The method returns immediately - the email is sent asynchronously by Auth0.
-            </AlertDescription>
-          </Alert>
-
-          <Alert>
-            <Info className="h-4 w-4" />
-            <AlertDescription>
-              <strong>Error Handling:</strong> Always wrap account management methods in try-catch blocks.
-              Check the <code>error.code</code> property to determine the appropriate user feedback.
-            </AlertDescription>
-          </Alert>
-        </div>
-
-        <CodeBlock
-          language="typescript"
-          filename="best-practices.ts"
-          code={`// ✅ Good: Session recovery on app mount
-useEffect(() => {
-  const restoreSession = async () => {
-    try {
-      await aegisAccount.recoverSession();
-      // Session recovered - aegisAccount state is now updated
-      setIsAuthenticated(true);
-    } catch {
-      // No session or recovery failed
-      setIsAuthenticated(false);
-    }
-  };
-  restoreSession();
-}, []);
-
-// ✅ Good: User confirmation for deletion
-const handleDelete = async () => {
-  const confirmed = window.confirm(
-    'Delete your account? This cannot be undone.'
-  );
-  if (confirmed) {
-    await aegisAccount.deleteAccount();
-  }
-};
-
-// ✅ Good: Clear feedback after password reset
-const handleReset = async (email) => {
-  await aegisAccount.passwordReset(email);
-  alert('Check your email for reset instructions');
-};
-
-// ❌ Bad: No error handling
-await aegisAccount.deleteAccount(); // Will crash on error
-
-// ❌ Bad: No user confirmation
-await aegisAccount.deleteAccount(); // Too dangerous!`}
-        />
-
-        <h2>Browser Opening (for OAuth)</h2>
-
-        <Tabs defaultValue="expo" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="expo">Expo</TabsTrigger>
-            <TabsTrigger value="native">React Native</TabsTrigger>
-            <TabsTrigger value="web">Web</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="expo">
-            <h4>Expo (Recommended)</h4>
-            <CodeBlock
-              language="typescript"
-              filename="expo-browser.tsx"
-              code={`import { openAuthSessionAsync } from 'expo-web-browser';
-
-const url = await aegisAccount.getAppleOAuthUrl('exp://192.168.1.16:8081');
-const result = await openAuthSessionAsync(url, 'exp://192.168.1.16:8081');
-await aegisAccount.handleOAuthCallback(result);`}
-            />
-          </TabsContent>
-
-          <TabsContent value="native">
-            <h4>React Native</h4>
-            <CodeBlock
-              language="typescript"
-              filename="native-browser.tsx"
-              code={`import { Linking } from 'react-native';
-
-const url = await aegisAccount.getAppleOAuthUrl('yourapp://callback');
-await Linking.openURL(url);
-// Handle the callback in your app`}
-            />
-          </TabsContent>
-
-          <TabsContent value="web">
-            <h4>Web</h4>
-            <CodeBlock
-              language="typescript"
-              filename="web-browser.tsx"
-              code={`const url = await aegisAccount.getAppleOAuthUrl('https://yourapp.com/callback');
-window.location.href = url;
-// Handle callback on your callback page`}
-            />
-          </TabsContent>
-        </Tabs>
-
-        <h2>Security & Storage</h2>
-
-        <div className="space-y-4 mb-6">
-          <Alert>
-            <Info className="h-4 w-4" />
-            <AlertDescription>
-              <strong>OAuth & Email/Password:</strong>
-              <br />No key storage needed - handled automatically
-              <br />Authentication tokens managed securely
-            </AlertDescription>
-          </Alert>
-
-          <Alert>
-            <Info className="h-4 w-4" />
-            <AlertDescription>
-              <strong>In-App Wallets:</strong>
-              <br />You must store private keys securely
-              <br />Client-side signing only
-              <br />Private keys never transmitted
-            </AlertDescription>
-          </Alert>
-        </div>
-
-        <CodeBlock
-          language="typescript"
-          filename="secure-storage.ts"
-          code={`// Example: Secure storage (React Native)
-import * as SecureStore from 'expo-secure-store';
-
-// Save private key
-const privateKey = await aegisAccount.deployAccount();
-await SecureStore.setItemAsync('wallet_key', privateKey);
-
-// Load on app start
-const savedKey = await SecureStore.getItemAsync('wallet_key');
-if (savedKey) {
-  await aegisAccount.connectAccount(savedKey);
-}`}
-        />
-
-        <h2>Configuration</h2>
-
-        <CodeBlock
-          language="typescript"
-          filename="config.ts"
-          code={`<AegisProvider
-  config={{
-    network: 'sepolia', // or 'mainnet'
-    appId: 'your-app-id', // Required: Get from https://aegis.cavos.xyz
-    paymasterApiKey: 'your-key', // Optional: For gasless transactions
-    enableLogging: true // Optional: For debugging
-  }}
->`}
-        />
 
         <h2>Error Handling</h2>
 
@@ -1130,18 +759,34 @@ try {
           </CardHeader>
           <CardContent>
             <div className="space-y-2 text-sm">
-              <div><strong>1. AegisProvider</strong> wraps your app</div>
-              <div><strong>2. useAegis()</strong> gives you the hook</div>
-              <div><strong>3. aegisAccount</strong> is your wallet - use it for everything!</div>
-              <div><strong>4. Three login ways:</strong> OAuth, Email, or Create Wallet</div>
-              <div><strong>5. All transactions</strong> happen through aegisAccount.execute()</div>
+              <div>
+                <strong>1. AegisProvider</strong> wraps your app
+              </div>
+              <div>
+                <strong>2. useAegis()</strong> gives you the hook
+              </div>
+              <div>
+                <strong>3. aegisAccount</strong> is your wallet - use it for
+                everything!
+              </div>
+              <div>
+                <strong>4. Three login ways:</strong> OAuth, Email, or Create
+                Wallet
+              </div>
+              <div>
+                <strong>5. All transactions</strong> happen through
+                aegisAccount.execute()
+              </div>
             </div>
             <p className="text-sm text-muted-foreground mt-4">
               That's it! Simple as that!
             </p>
             <div className="flex flex-wrap gap-2 mt-4">
               <Badge variant="outline">
-                <a href="https://aegis.cavos.xyz" className="text-brand-primary">
+                <a
+                  href="https://aegis.cavos.xyz"
+                  className="text-brand-primary"
+                >
                   Get App ID
                 </a>
               </Badge>
@@ -1151,7 +796,10 @@ try {
                 </a>
               </Badge>
               <Badge variant="outline">
-                <a href="https://discord.gg/Vvq2ekEV47" className="text-brand-primary">
+                <a
+                  href="https://discord.gg/Vvq2ekEV47"
+                  className="text-brand-primary"
+                >
                   Community Support
                 </a>
               </Badge>
