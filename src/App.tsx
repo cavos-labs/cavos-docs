@@ -12,6 +12,8 @@ import QuickStart from "./pages/QuickStart";
 import AuthOverview from "./pages/auth/Overview";
 import AegisSDK from "./pages/sdk/AegisSDK";
 import { AuthDemo } from "./pages/AuthDemo";
+import WebTemplate from "./pages/templates/WebTemplate";
+import MobileTemplate from "./pages/templates/MobileTemplate";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +32,8 @@ const App = () => (
             <Route path="/auth/overview" element={<AuthOverview />} />
             <Route path="/sdk/aegis" element={<AegisSDK />} />
             <Route path="/auth/demo" element={<AuthDemo />} />
+            <Route path="/templates/web" element={<WebTemplate />} />
+            <Route path="/templates/mobile" element={<MobileTemplate />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
