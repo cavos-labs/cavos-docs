@@ -1,45 +1,98 @@
-import React, { useState, useEffect } from 'react';
-import { Search, FileText, Code, Book, ExternalLink } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { Search, FileText, Code, Book, ExternalLink } from "lucide-react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { useNavigate } from 'react-router-dom';
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
 
 interface SearchResult {
   title: string;
   url: string;
-  type: 'page' | 'section' | 'api' | 'external';
+  type: "page" | "section" | "api" | "external";
   description?: string;
   category?: string;
 }
 
 const searchData: SearchResult[] = [
   // Pages
-  { title: 'Overview', url: '/', type: 'page', description: 'Introduction to Cavos Service', category: 'Getting Started' },
-  { title: 'Quick Start', url: '/quick-start', type: 'page', description: 'Get started with Cavos Service integration', category: 'Getting Started' },
-  { title: 'Installation', url: '/installation', type: 'page', description: 'Install Cavos Service SDKs', category: 'Getting Started' },
-  { title: 'Authentication Guide', url: '/auth/overview', type: 'page', description: 'Auth0 integration overview', category: 'Authentication' },
-  
+  {
+    title: "Overview",
+    url: "/",
+    type: "page",
+    description: "Introduction to Cavos Service",
+    category: "Getting Started",
+  },
+  {
+    title: "Quick Start",
+    url: "/quick-start",
+    type: "page",
+    description: "Get started with Cavos Service integration",
+    category: "Getting Started",
+  },
+  {
+    title: "Authentication Guide",
+    url: "/auth/overview",
+    type: "page",
+    description: "Auth0 integration overview",
+    category: "Authentication",
+  },
+
   // SDKs
-  
+
   // API Reference
-  
+
   // External
-  { title: 'Organization Setup', url: 'https://services.cavos.xyz', type: 'external', description: 'Register your organization', category: 'External' },
-  
+  {
+    title: "Organization Setup",
+    url: "https://services.cavos.xyz",
+    type: "external",
+    description: "Register your organization",
+    category: "External",
+  },
+
   // API Endpoints
-  
+
   // Concepts
-  { title: 'Starknet Integration', url: '/quick-start', type: 'section', description: 'ArgentX smart accounts on Starknet', category: 'Concepts' },
-  { title: 'Biometric Authentication', url: '/sdk/aegis', type: 'section', description: 'Face ID and Touch ID integration', category: 'Concepts' },
-  { title: 'AVNU Paymaster', url: '/sdk/aegis', type: 'section', description: 'Automatic gas fee abstraction', category: 'Concepts' },
-  { title: 'Token Management', url: '/sdk/aegis', type: 'section', description: 'Access and refresh token handling', category: 'Concepts' },
-  { title: 'Organization Secret', url: '/sdk/aegis', type: 'section', description: 'Backend authentication for registration/login', category: 'Concepts' },
+  {
+    title: "Starknet Integration",
+    url: "/quick-start",
+    type: "section",
+    description: "ArgentX smart accounts on Starknet",
+    category: "Concepts",
+  },
+  {
+    title: "Biometric Authentication",
+    url: "/sdk/aegis",
+    type: "section",
+    description: "Face ID and Touch ID integration",
+    category: "Concepts",
+  },
+  {
+    title: "AVNU Paymaster",
+    url: "/sdk/aegis",
+    type: "section",
+    description: "Automatic gas fee abstraction",
+    category: "Concepts",
+  },
+  {
+    title: "Token Management",
+    url: "/sdk/aegis",
+    type: "section",
+    description: "Access and refresh token handling",
+    category: "Concepts",
+  },
+  {
+    title: "Organization Secret",
+    url: "/sdk/aegis",
+    type: "section",
+    description: "Backend authentication for registration/login",
+    category: "Concepts",
+  },
 ];
 
 interface SearchDialogProps {
@@ -47,42 +100,46 @@ interface SearchDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export const SearchDialog: React.FC<SearchDialogProps> = ({ open, onOpenChange }) => {
-  const [query, setQuery] = useState('');
+export const SearchDialog: React.FC<SearchDialogProps> = ({
+  open,
+  onOpenChange,
+}) => {
+  const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (query.trim() === '') {
+    if (query.trim() === "") {
       setResults([]);
       return;
     }
 
-    const filteredResults = searchData.filter(item => {
-      const searchTerms = query.toLowerCase().split(' ');
-      const searchableText = `${item.title} ${item.description} ${item.category}`.toLowerCase();
-      
-      return searchTerms.every(term => searchableText.includes(term));
+    const filteredResults = searchData.filter((item) => {
+      const searchTerms = query.toLowerCase().split(" ");
+      const searchableText =
+        `${item.title} ${item.description} ${item.category}`.toLowerCase();
+
+      return searchTerms.every((term) => searchableText.includes(term));
     });
 
     setResults(filteredResults.slice(0, 10)); // Limit to 10 results
   }, [query]);
 
   const handleResultClick = (result: SearchResult) => {
-    if (result.type === 'external') {
-      window.open(result.url, '_blank');
+    if (result.type === "external") {
+      window.open(result.url, "_blank");
     } else {
       navigate(result.url);
     }
     onOpenChange(false);
-    setQuery('');
+    setQuery("");
   };
 
   const getIcon = (type: string) => {
     switch (type) {
-      case 'api':
+      case "api":
         return <Code className="h-4 w-4" />;
-      case 'external':
+      case "external":
         return <ExternalLink className="h-4 w-4" />;
       default:
         return <FileText className="h-4 w-4" />;
@@ -91,27 +148,27 @@ export const SearchDialog: React.FC<SearchDialogProps> = ({ open, onOpenChange }
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'api':
-        return 'bg-blue-500/10 text-blue-600';
-      case 'external':
-        return 'bg-green-500/10 text-green-600';
-      case 'section':
-        return 'bg-purple-500/10 text-purple-600';
+      case "api":
+        return "bg-blue-500/10 text-blue-600";
+      case "external":
+        return "bg-green-500/10 text-green-600";
+      case "section":
+        return "bg-purple-500/10 text-purple-600";
       default:
-        return 'bg-gray-500/10 text-gray-600';
+        return "bg-gray-500/10 text-gray-600";
     }
   };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
         onOpenChange(true);
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [onOpenChange]);
 
   return (
@@ -123,7 +180,7 @@ export const SearchDialog: React.FC<SearchDialogProps> = ({ open, onOpenChange }
             Search Documentation
           </DialogTitle>
         </DialogHeader>
-        
+
         <div className="space-y-3 sm:space-y-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -139,7 +196,9 @@ export const SearchDialog: React.FC<SearchDialogProps> = ({ open, onOpenChange }
           {query && results.length === 0 && (
             <div className="text-center py-6 sm:py-8 text-muted-foreground">
               <Book className="h-6 w-6 sm:h-8 sm:w-8 mx-auto mb-2 opacity-50" />
-              <p className="text-sm sm:text-base">No results found for "{query}"</p>
+              <p className="text-sm sm:text-base">
+                No results found for "{query}"
+              </p>
             </div>
           )}
 
@@ -154,21 +213,28 @@ export const SearchDialog: React.FC<SearchDialogProps> = ({ open, onOpenChange }
                   <div className="mt-0.5 flex-shrink-0">
                     {getIcon(result.type)}
                   </div>
-                  
+
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <h4 className="font-medium truncate text-xs sm:text-sm">{result.title}</h4>
-                      <Badge variant="secondary" className={`text-xs ${getTypeColor(result.type)} hidden sm:inline-flex`}>
+                      <h4 className="font-medium truncate text-xs sm:text-sm">
+                        {result.title}
+                      </h4>
+                      <Badge
+                        variant="secondary"
+                        className={`text-xs ${getTypeColor(
+                          result.type
+                        )} hidden sm:inline-flex`}
+                      >
                         {result.type}
                       </Badge>
                     </div>
-                    
+
                     {result.description && (
                       <p className="text-xs sm:text-sm text-muted-foreground line-clamp-1 sm:line-clamp-2">
                         {result.description}
                       </p>
                     )}
-                    
+
                     {result.category && (
                       <p className="text-xs text-muted-foreground mt-1 hidden sm:block">
                         {result.category}
@@ -185,7 +251,13 @@ export const SearchDialog: React.FC<SearchDialogProps> = ({ open, onOpenChange }
               <div>
                 <h4 className="text-sm font-medium mb-2">Popular searches</h4>
                 <div className="flex flex-wrap gap-1 sm:gap-2">
-                  {['authentication', 'wallet deployment', 'token swap', 'biometric auth', 'starknet'].map((term) => (
+                  {[
+                    "authentication",
+                    "wallet deployment",
+                    "token swap",
+                    "biometric auth",
+                    "starknet",
+                  ].map((term) => (
                     <button
                       key={term}
                       onClick={() => setQuery(term)}
@@ -196,10 +268,14 @@ export const SearchDialog: React.FC<SearchDialogProps> = ({ open, onOpenChange }
                   ))}
                 </div>
               </div>
-              
+
               <div className="text-xs text-muted-foreground hidden sm:block">
-                <kbd className="px-1.5 py-0.5 bg-muted border border-border rounded text-xs">⌘</kbd>
-                <kbd className="px-1.5 py-0.5 bg-muted border border-border rounded text-xs ml-1">K</kbd>
+                <kbd className="px-1.5 py-0.5 bg-muted border border-border rounded text-xs">
+                  ⌘
+                </kbd>
+                <kbd className="px-1.5 py-0.5 bg-muted border border-border rounded text-xs ml-1">
+                  K
+                </kbd>
                 <span className="ml-2">to open search</span>
               </div>
             </div>
