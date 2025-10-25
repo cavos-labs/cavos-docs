@@ -1,0 +1,1295 @@
+openapi: 3.0.3
+info:
+  title: Aegis Cavos API
+  description: |
+    A comprehensive wallet provider service for Starknet with Auth0 integration, supporting multiple authentication methods including Apple Sign In and Google OAuth.
+    
+    ## Overview
+    Aegis Cavos is a comprehensive wallet deployment and management service that enables developers and businesses to create fully functional smart accounts on Starknet with a single API call. Built with complete gas fee abstraction through AVNU's paymaster integration.
+    
+    ## Key Features
+    - **Invisible Wallets**: No seed phrases, no browser extensions. Users authenticate with email or social login
+    - **Gas Fee Abstraction**: Complete gas fee handling through AVNU paymaster
+    - **Multi-Network Support**: Sepolia testnet and Mainnet environments
+    - **Smart Contract Execution**: Execute transactions with simplified API
+    - **User Authentication**: Auth0 integration for secure user management
+    - **Organization Management**: Multi-tenant architecture with org-based isolation
+    
+    ## Authentication
+    Before using the Aegis Cavos API, you must register your organization at [https://services.cavos.xyz](https://services.cavos.xyz) to get your App ID and API Secret.
+    
+    ## Support & Community
+    - **Official Website**: [https://aegis.cavos.xyz/](https://aegis.cavos.xyz/)
+    - **Discord Community**: [https://discord.gg/JzCj6vFtAT](https://discord.gg/JzCj6vFtAT) - Join for support and updates
+  version: 1.0.0
+  contact:
+    name: Aegis Cavos Support
+    url: https://aegis.cavos.xyz/
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+  - url: https://services.cavos.xyz
+    description: Production server
+  - url: https://aegis.cavos.xyz
+    description: Development server
+
+security:
+  - BearerAuth: []
+  - AppIdAuth: []
+
+paths:
+  # Authentication Endpoints
+  /api/v1/external/auth/apple:
+    get:
+      tags:
+        - Authentication
+      summary: Initiate Apple Sign In
+      description: |
+        Initiates Apple Sign In authentication flow. Returns an Auth0 URL that the user should be redirected to for authentication.
+        
+        **Flow:**
+        1. Call this endpoint with your organization's App ID
+        2. Redirect user to the returned URL
+        3. User completes Apple authentication
+        4. User is redirected to your callback URL with auth code
+        5. Process the callback to get user data and wallet info
+      operationId: initiateAppleAuth
+      parameters:
+        - name: network
+          in: query
+          required: false
+          description: Target network for wallet deployment
+          schema:
+            type: string
+            enum: [sepolia, mainnet]
+            default: sepolia
+        - name: final_redirect_uri
+          in: query
+          required: true
+          description: URL to redirect user after successful authentication
+          schema:
+            type: string
+            format: uri
+        - name: app_id
+          in: query
+          required: true
+          description: Your organization's App ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Authentication URL generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    format: uri
+                    description: Auth0 authorization URL for Apple Sign In
+                required:
+                  - url
+        '400':
+          description: Bad request - missing required parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - invalid app_id or organization not active for mainnet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security: []
+
+  /api/v1/external/auth/google:
+    get:
+      tags:
+        - Authentication
+      summary: Initiate Google OAuth
+      description: |
+        Initiates Google OAuth authentication flow. Returns an Auth0 URL that the user should be redirected to for authentication.
+        
+        **Flow:**
+        1. Call this endpoint with your organization's App ID
+        2. Redirect user to the returned URL
+        3. User completes Google authentication
+        4. User is redirected to your callback URL with auth code
+        5. Process the callback to get user data and wallet info
+      operationId: initiateGoogleAuth
+      parameters:
+        - name: network
+          in: query
+          required: false
+          description: Target network for wallet deployment
+          schema:
+            type: string
+            enum: [sepolia, mainnet]
+            default: sepolia
+        - name: final_redirect_uri
+          in: query
+          required: true
+          description: URL to redirect user after successful authentication
+          schema:
+            type: string
+            format: uri
+        - name: app_id
+          in: query
+          required: true
+          description: Your organization's App ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Authentication URL generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    format: uri
+                    description: Auth0 authorization URL for Google OAuth
+                required:
+                  - url
+        '400':
+          description: Bad request - missing required parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - invalid app_id or organization not active for mainnet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security: []
+
+  /api/v1/external/auth/apple/callback:
+    get:
+      tags:
+        - Authentication
+      summary: Apple Sign In Callback
+      description: |
+        Handles the callback from Apple Sign In authentication. This endpoint processes the authorization code and exchanges it for user data and wallet information.
+        
+        **Note:** This endpoint is called automatically by Auth0 after user authentication. You should not call it directly.
+      operationId: handleAppleCallback
+      parameters:
+        - name: code
+          in: query
+          required: true
+          description: Authorization code from Auth0
+          schema:
+            type: string
+        - name: state
+          in: query
+          required: false
+          description: State parameter for CSRF protection
+          schema:
+            type: string
+        - name: network
+          in: query
+          required: true
+          description: Target network
+          schema:
+            type: string
+            enum: [sepolia, mainnet]
+        - name: org_id
+          in: query
+          required: true
+          description: Organization ID
+          schema:
+            type: string
+        - name: app_id
+          in: query
+          required: true
+          description: App ID
+          schema:
+            type: string
+        - name: final_redirect_uri
+          in: query
+          required: true
+          description: Final redirect URI
+          schema:
+            type: string
+            format: uri
+      responses:
+        '302':
+          description: Redirect to final_redirect_uri with user data
+        '400':
+          description: Bad request - invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security: []
+
+  /api/v1/external/auth/google/callback:
+    get:
+      tags:
+        - Authentication
+      summary: Google OAuth Callback
+      description: |
+        Handles the callback from Google OAuth authentication. This endpoint processes the authorization code and exchanges it for user data and wallet information.
+        
+        **Note:** This endpoint is called automatically by Auth0 after user authentication. You should not call it directly.
+      operationId: handleGoogleCallback
+      parameters:
+        - name: code
+          in: query
+          required: true
+          description: Authorization code from Auth0
+          schema:
+            type: string
+        - name: state
+          in: query
+          required: false
+          description: State parameter for CSRF protection
+          schema:
+            type: string
+        - name: network
+          in: query
+          required: true
+          description: Target network
+          schema:
+            type: string
+            enum: [sepolia, mainnet]
+        - name: org_id
+          in: query
+          required: true
+          description: Organization ID
+          schema:
+            type: string
+        - name: app_id
+          in: query
+          required: true
+          description: App ID
+          schema:
+            type: string
+        - name: final_redirect_uri
+          in: query
+          required: true
+          description: Final redirect URI
+          schema:
+            type: string
+            format: uri
+      responses:
+        '302':
+          description: Redirect to final_redirect_uri with user data
+        '400':
+          description: Bad request - invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security: []
+
+  /api/v1/external/auth/refresh:
+    post:
+      tags:
+        - Authentication
+      summary: Refresh Access Token
+      description: |
+        Refreshes an expired access token using a refresh token. This endpoint allows you to get a new access token without requiring the user to re-authenticate.
+      operationId: refreshAccessToken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refresh_token:
+                  type: string
+                  description: The refresh token obtained during initial authentication
+                org_id:
+                  type: string
+                  description: Organization ID
+                network:
+                  type: string
+                  enum: [sepolia, mainnet]
+                  description: Target network
+              required:
+                - refresh_token
+                - org_id
+                - network
+      responses:
+        '200':
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Unauthorized - invalid refresh token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request - missing required parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # Wallet Management Endpoints
+  /api/v1/external/deploy:
+    post:
+      tags:
+        - Wallet Management
+      summary: Deploy Smart Account
+      description: |
+        Deploys a new ArgentX smart account on Starknet. The wallet is automatically created with gas fee abstraction through AVNU paymaster.
+        
+        **Features:**
+        - Automatic ArgentX smart account deployment
+        - Gas fee abstraction (no gas fees for users)
+        - Support for both Sepolia and Mainnet
+        - Automatic wallet storage and management
+      operationId: deployWallet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                network:
+                  type: string
+                  enum: [sepolia, mainnet]
+                  description: Target network for wallet deployment
+                auth0_uid:
+                  type: string
+                  description: Auth0 user ID (optional, for user-specific wallets)
+              required:
+                - network
+      responses:
+        '200':
+          description: Wallet deployed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  public_key:
+                    type: string
+                    description: Public key of the deployed wallet
+                  private_key:
+                    type: string
+                    description: Encrypted private key (for internal use)
+                  address:
+                    type: string
+                    description: Wallet address on Starknet
+                required:
+                  - public_key
+                  - private_key
+                  - address
+        '400':
+          description: Bad request - invalid parameters or organization not active for mainnet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - invalid API secret
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error during wallet deployment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/external/execute:
+    post:
+      tags:
+        - Smart Contract Execution
+      summary: Execute Smart Contract Calls
+      description: |
+        Executes smart contract calls on Starknet using the specified wallet. All transactions are gasless through AVNU paymaster integration.
+        
+        **Features:**
+        - Gasless transaction execution
+        - Support for multiple contract calls in a single transaction
+        - Automatic transaction signing
+        - Real-time transaction status
+      operationId: executeContractCalls
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                network:
+                  type: string
+                  enum: [sepolia, mainnet]
+                  description: Target network
+                calls:
+                  type: array
+                  description: Array of contract calls to execute
+                  items:
+                    $ref: '#/components/schemas/ContractCall'
+                address:
+                  type: string
+                  description: Wallet address to execute from
+              required:
+                - network
+                - calls
+                - address
+      responses:
+        '200':
+          description: Transaction executed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      transactionHash:
+                        type: string
+                        description: Transaction hash on Starknet
+                      status:
+                        type: string
+                        description: Transaction status
+                    required:
+                      - transactionHash
+                      - status
+        '400':
+          description: Bad request - invalid parameters or organization not active for mainnet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - invalid API secret
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Wallet not found for organization
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error during execution
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/external/execute/session:
+    post:
+      tags:
+        - Smart Contract Execution
+      summary: Execute Smart Contract Calls (Session-based)
+      description: |
+        Executes smart contract calls using session-based authentication. This endpoint is designed for frontend applications that have user sessions.
+        
+        **Features:**
+        - Session-based authentication
+        - Automatic token refresh
+        - Gasless transaction execution
+        - User-specific wallet access
+      operationId: executeContractCallsSession
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                address:
+                  type: string
+                  description: Wallet address to execute from
+                org_id:
+                  type: string
+                  description: Organization ID
+                calls:
+                  type: array
+                  description: Array of contract calls to execute
+                  items:
+                    $ref: '#/components/schemas/ContractCall'
+                network:
+                  type: string
+                  enum: [sepolia, mainnet]
+                  description: Target network
+              required:
+                - address
+                - org_id
+                - calls
+                - network
+      responses:
+        '200':
+          description: Transaction executed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Execution success status
+                  result:
+                    type: object
+                    properties:
+                      transactionHash:
+                        type: string
+                        description: Transaction hash on Starknet
+                      status:
+                        type: string
+                        description: Transaction status
+                    required:
+                      - transactionHash
+                      - status
+                  accessToken:
+                    type: string
+                    description: Updated access token (if refreshed)
+        '400':
+          description: Bad request - missing required fields
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - invalid or expired session token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Wallet not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # Wallet Information Endpoints
+  /api/v1/external/wallet/balance:
+    post:
+      tags:
+        - Wallet Information
+      summary: Get Wallet Balance
+      description: |
+        Retrieves the token balance for a specific wallet address. Supports ERC20 tokens on Starknet.
+      operationId: getWalletBalance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                address:
+                  type: string
+                  description: Wallet address to check balance for
+                tokenAddress:
+                  type: string
+                  description: ERC20 token contract address (defaults to USDC)
+                  default: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8"
+                decimals:
+                  type: integer
+                  description: Token decimals (defaults to 6 for USDC)
+                  default: 6
+              required:
+                - address
+      responses:
+        '200':
+          description: Balance retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  balance:
+                    type: number
+                    description: Token balance in human-readable format
+                  balanceRaw:
+                    type: string
+                    description: Raw token balance from contract
+                required:
+                  - balance
+                  - balanceRaw
+        '400':
+          description: Bad request - missing wallet address
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Wallet not found for organization
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/external/wallets/org:
+    get:
+      tags:
+        - Wallet Information
+      summary: Get Organization Wallets
+      description: |
+        Retrieves all wallets associated with an organization, including user information from Auth0.
+      operationId: getOrganizationWallets
+      parameters:
+        - name: org_id
+          in: query
+          required: true
+          description: Organization ID
+          schema:
+            type: string
+        - name: from
+          in: query
+          required: false
+          description: Filter wallets created from this date (ISO format)
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          required: false
+          description: Filter wallets created until this date (ISO format)
+          schema:
+            type: string
+            format: date
+        - name: skip_auth0
+          in: query
+          required: false
+          description: Skip Auth0 user data fetching for faster response
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: Wallets retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      org_id:
+                        type: integer
+                      counts:
+                        type: object
+                        properties:
+                          mainnet:
+                            type: integer
+                          sepolia:
+                            type: integer
+                          total:
+                            type: integer
+                      wallets:
+                        type: object
+                        properties:
+                          mainnet:
+                            type: array
+                            items:
+                              $ref: '#/components/schemas/WalletInfo'
+                          sepolia:
+                            type: array
+                            items:
+                              $ref: '#/components/schemas/WalletInfo'
+        '400':
+          description: Bad request - missing or invalid org_id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # Transaction Endpoints
+  /api/v1/external/transactions/wallet/{address}:
+    get:
+      tags:
+        - Transactions
+      summary: Get Wallet Transactions
+      description: |
+        Retrieves all transactions for a specific wallet address.
+      operationId: getWalletTransactions
+      parameters:
+        - name: address
+          in: path
+          required: true
+          description: Wallet address
+          schema:
+            type: string
+        - name: network
+          in: query
+          required: false
+          description: Filter by network
+          schema:
+            type: string
+            enum: [sepolia, mainnet]
+        - name: from
+          in: query
+          required: false
+          description: Filter transactions from this date (ISO format)
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          required: false
+          description: Filter transactions until this date (ISO format)
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Wallet transactions retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TransactionInfo'
+        '400':
+          description: Bad request - invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/external/tx:
+    get:
+      tags:
+        - Transactions
+      summary: Get Transaction Details
+      description: |
+        Retrieves detailed information about a specific transaction, including token transfers and events.
+      operationId: getTransactionDetails
+      parameters:
+        - name: txHash
+          in: query
+          required: true
+          description: Transaction hash
+          schema:
+            type: string
+        - name: network
+          in: query
+          required: false
+          description: Network where the transaction was executed
+          schema:
+            type: string
+            enum: [sepolia, mainnet]
+            default: mainnet
+      responses:
+        '200':
+          description: Transaction details retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transfers:
+                    type: object
+                    properties:
+                      tokenTransfers:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/TokenTransfer'
+                      events:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/TransactionEvent'
+        '400':
+          description: Bad request - missing txHash or invalid network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '502':
+          description: Bad gateway - failed to fetch from Voyager
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # Analytics Endpoints
+  /api/v1/external/analytics/org/{orgId}:
+    get:
+      tags:
+        - Analytics
+      summary: Get Organization Analytics
+      description: |
+        Retrieves analytics data for a specific organization, including wallet counts, transaction metrics, and user activity.
+      operationId: getOrganizationAnalytics
+      parameters:
+        - name: orgId
+          in: path
+          required: true
+          description: Organization ID
+          schema:
+            type: string
+        - name: from
+          in: query
+          required: false
+          description: Start date for analytics (ISO format)
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          required: false
+          description: End date for analytics (ISO format)
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Analytics data retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      org_id:
+                        type: integer
+                      wallet_counts:
+                        type: object
+                        properties:
+                          total:
+                            type: integer
+                          mainnet:
+                            type: integer
+                          sepolia:
+                            type: integer
+                      transaction_metrics:
+                        type: object
+                        properties:
+                          total_transactions:
+                            type: integer
+                          successful_transactions:
+                            type: integer
+                          failed_transactions:
+                            type: integer
+                      user_activity:
+                        type: object
+                        properties:
+                          active_users:
+                            type: integer
+                          new_users:
+                            type: integer
+        '400':
+          description: Bad request - invalid orgId or date parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Organization not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # Utility Endpoints
+  /api/v1/external/format:
+    post:
+      tags:
+        - Utilities
+      summary: Format Address
+      description: |
+        Formats a Starknet address to the standard 64-character hex format.
+      operationId: formatAddress
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                address:
+                  type: string
+                  description: Address to format
+              required:
+                - address
+      responses:
+        '200':
+          description: Address formatted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  formatted_address:
+                    type: string
+                    description: Formatted address
+                required:
+                  - formatted_address
+        '400':
+          description: Bad request - missing address parameter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/external/strk-price:
+    get:
+      tags:
+        - Utilities
+      summary: Get STRK Token Price
+      description: |
+        Retrieves the current price of STRK token in USD.
+      operationId: getStrkPrice
+      responses:
+        '200':
+          description: STRK price retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  price:
+                    type: number
+                    description: STRK price in USD
+                  currency:
+                    type: string
+                    description: Currency (USD)
+                  timestamp:
+                    type: string
+                    format: date-time
+                    description: Price timestamp
+                required:
+                  - price
+                  - currency
+                  - timestamp
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        API Secret token for organization authentication. 
+        Get your API Secret from your Aegis Cavos organization dashboard at https://services.cavos.xyz
+    AppIdAuth:
+      type: apiKey
+      in: query
+      name: app_id
+      description: |
+        App ID for organization identification.
+        Get your App ID from your Aegis Cavos organization dashboard at https://services.cavos.xyz
+
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message
+        error:
+          type: string
+          description: Additional error details
+        details:
+          type: string
+          description: Detailed error information
+      required:
+        - message
+
+    AuthResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Authentication success status
+        data:
+          type: object
+          properties:
+            user_id:
+              type: string
+              description: Auth0 user ID
+            org_id:
+              type: string
+              description: Organization ID
+            email:
+              type: string
+              format: email
+              description: User email
+            wallet:
+              $ref: '#/components/schemas/WalletInfo'
+            created_at:
+              type: string
+              format: date-time
+              description: Account creation timestamp
+            authData:
+              $ref: '#/components/schemas/AuthData'
+            walletStatus:
+              $ref: '#/components/schemas/WalletStatusInfo'
+          required:
+            - user_id
+            - org_id
+            - email
+            - authData
+      required:
+        - success
+        - data
+
+    WalletInfo:
+      type: object
+      properties:
+        address:
+          type: string
+          description: Wallet address on Starknet
+        public_key:
+          type: string
+          description: Wallet public key
+        private_key:
+          type: string
+          description: Encrypted private key (for internal use)
+        network:
+          type: string
+          enum: [sepolia, mainnet]
+          description: Network where wallet is deployed
+        user_id:
+          type: string
+          description: Associated Auth0 user ID
+        org_id:
+          type: string
+          description: Organization ID
+        id:
+          type: string
+          description: Wallet ID
+        created_at:
+          type: string
+          format: date-time
+          description: Wallet creation timestamp
+        auth0_user:
+          type: object
+          properties:
+            user_id:
+              type: string
+            email:
+              type: string
+              format: email
+            name:
+              type: string
+            nickname:
+              type: string
+            picture:
+              type: string
+              format: uri
+          description: Auth0 user information
+
+    AuthData:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: JWT access token
+        refreshToken:
+          type: string
+          description: Refresh token for token renewal
+        expiresIn:
+          type: integer
+          description: Token expiration time in seconds
+        timestamp:
+          type: integer
+          description: Token creation timestamp
+        user_id:
+          type: string
+          description: Auth0 user ID
+        email:
+          type: string
+          format: email
+          description: User email
+        org_id:
+          type: string
+          description: Organization ID
+      required:
+        - accessToken
+        - refreshToken
+        - expiresIn
+        - timestamp
+        - user_id
+        - email
+        - org_id
+
+    WalletStatusInfo:
+      type: object
+      properties:
+        deploymentFailed:
+          type: boolean
+          description: Whether wallet deployment failed
+        message:
+          type: string
+          description: Status message
+
+    ContractCall:
+      type: object
+      properties:
+        contractAddress:
+          type: string
+          description: Target contract address
+        entrypoint:
+          type: string
+          description: Function name to call
+        calldata:
+          type: array
+          items:
+            type: string
+          description: Function parameters
+      required:
+        - contractAddress
+        - entrypoint
+        - calldata
+
+    TransactionInfo:
+      type: object
+      properties:
+        hash:
+          type: string
+          description: Transaction hash
+        timestamp:
+          type: integer
+          description: Transaction timestamp
+        actual_fee:
+          type: string
+          description: Actual transaction fee
+        org_id:
+          type: integer
+          description: Organization ID
+        status:
+          type: string
+          description: Transaction status
+        network:
+          type: string
+          enum: [sepolia, mainnet]
+          description: Network where transaction was executed
+
+    TokenTransfer:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Token symbol
+        from:
+          type: string
+          description: Sender address
+        to:
+          type: string
+          description: Recipient address
+        amount:
+          type: string
+          description: Transfer amount
+
+    TransactionEvent:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Event name
+        from:
+          type: string
+          description: From address
+        to:
+          type: string
+          description: To address
+        amount:
+          type: string
+          description: Event amount
+        contractAlias:
+          type: string
+          description: Contract alias
+        timestamp:
+          type: integer
+          description: Event timestamp
+
+tags:
+  - name: Authentication
+    description: User authentication and session management
+  - name: Wallet Management
+    description: Smart account deployment and management
+  - name: Smart Contract Execution
+    description: Execute smart contract calls and transactions
+  - name: Wallet Information
+    description: Retrieve wallet data and balances
+  - name: Transactions
+    description: Transaction history and details
+  - name: Analytics
+    description: Analytics and metrics
+  - name: Utilities
+    description: Utility functions and helpers

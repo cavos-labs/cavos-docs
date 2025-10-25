@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { Home, Zap, Shield, ChevronRight, Code } from "lucide-react";
+import { Home, Zap, Shield, ChevronRight, Code, Globe } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -34,6 +34,16 @@ const navigationItems = [
         title: "Aegis SDK (v0.1.13)",
         url: "/sdk/aegis",
         icon: Shield,
+      },
+    ],
+  },
+  {
+    title: "API",
+    items: [
+      {
+        title: "API Documentation",
+        url: "/api",
+        icon: Globe,
       },
     ],
   },
