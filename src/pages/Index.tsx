@@ -91,7 +91,7 @@ const Index = () => {
             Get Started
           </h2>
 
-          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
             <a
               href="/quick-start"
               className="group p-6 rounded-lg border bg-card/50 hover:bg-card/80 transition-all duration-200 hover:shadow-md"
@@ -119,6 +119,21 @@ const Index = () => {
               </div>
               <p className="text-sm text-muted-foreground">
                 Complete SDK documentation
+              </p>
+            </a>
+
+            <a
+              href="/api"
+              className="group p-6 rounded-lg border bg-card/50 hover:bg-card/80 transition-all duration-200 hover:shadow-md"
+            >
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold group-hover:text-primary transition-colors">
+                  API Reference
+                </h3>
+                <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Interactive API documentation
               </p>
             </a>
           </div>
