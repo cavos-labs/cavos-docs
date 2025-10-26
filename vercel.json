@@ -1,8 +1,19 @@
 {
   "rewrites": [
     {
-      "source": "/((?!swagger\\.yaml$).*)",
+      "source": "/((?!swagger\\.yaml).*)",
       "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/swagger.yaml",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/x-yaml"
+        }
+      ]
     }
   ]
 }
