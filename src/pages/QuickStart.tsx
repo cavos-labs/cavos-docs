@@ -76,6 +76,7 @@ console.log('Access token:', result.accessToken);`}
           <li><strong>Auth0 Integration</strong> - Seamless authentication flow</li>
           <li><strong>ArgentX Smart Accounts</strong> - Deploy smart wallets automatically</li>
           <li><strong>Token Swapping</strong> - Built-in DEX integration</li>
+          <li><strong>Private Key Export</strong> - Export social login wallets for self-custody</li>
         </ul>
 
         <h2>5. Execute Transactions</h2>
@@ -109,7 +110,7 @@ console.log('TX Hash:', result.txHash);`}
         
         <ul>
           <li><a href="/auth/overview">Authentication Overview</a> - Complete auth flow details</li>
-          <li><a href="/sdk/aegis">Aegis SDK Documentation</a> - Full API reference</li>
+          <li><a href="/sdk/aegis">Aegis SDK Documentation</a> - Full API reference including private key export</li>
           <li><a href="/auth/demo">Auth Demo</a> - Interactive authentication example</li>
         </ul>
 
