@@ -1,12 +1,14 @@
 import React from "react";
 import { DocLayout } from "@/components/DocLayout";
 import { DocNavigation } from "@/components/DocNavigation";
-import SwaggerUI from "swagger-ui-react";
-import "swagger-ui-react/swagger-ui.css";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, Code, Zap, Shield, Globe } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Code, Zap, Shield, Globe, BookOpen, ArrowRight, ExternalLink } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const API = () => {
+  const navigate = useNavigate();
+
   return (
     <DocLayout>
       <div className="doc-content">
@@ -128,37 +130,42 @@ const API = () => {
           </p>
         </div>
 
-        {/* Swagger UI */}
+        {/* Interactive Documentation Section */}
         <div className="mb-8">
-          <h2 className="text-2xl font-semibold mb-6 dark:text-white">API Documentation</h2>
-          <div className="border rounded-lg overflow-hidden">
-            <div className="p-4 bg-muted/50 border-b">
-              <p className="text-sm text-muted-foreground dark:text-white">
-                Interactive API documentation with live testing capabilities
+          <h2 className="text-2xl font-semibold mb-6 dark:text-white">Interactive Documentation</h2>
+          
+          <div className="border rounded-lg overflow-hidden bg-gradient-to-r from-primary/5 to-primary/10">
+            <div className="p-8 text-center">
+              <div className="flex justify-center mb-6">
+                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                  <BookOpen className="h-8 w-8 text-primary" />
+                </div>
+              </div>
+              
+              <h3 className="text-2xl font-semibold mb-4 dark:text-white">
+                Explore Our API
+              </h3>
+              
+              <p className="text-muted-foreground dark:text-white mb-6 max-w-2xl mx-auto">
+                Access our comprehensive interactive API documentation with live testing capabilities. 
+                Try out endpoints directly in your browser and see real-time responses.
               </p>
-            </div>
-            <div className="bg-background">
-              <SwaggerUI
-                url="/swagger.yaml"
-                docExpansion="list"
-                defaultModelsExpandDepth={2}
-                defaultModelExpandDepth={2}
-                displayRequestDuration={true}
-                tryItOutEnabled={true}
-                supportedSubmitMethods={["get", "post", "put", "delete", "patch"]}
-                deepLinking={true}
-                showExtensions={true}
-                showCommonExtensions={true}
-                filter={true}
-                requestInterceptor={(request) => {
-                  // Add any custom request interceptor logic here
-                  return request;
-                }}
-                responseInterceptor={(response) => {
-                  // Add any custom response interceptor logic here
-                  return response;
-                }}
-              />
+              
+              <div className="flex justify-center">
+                <Button
+                  onClick={() => navigate("/swagger")}
+                  size="lg"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                >
+                  <BookOpen className="h-5 w-5 mr-2" />
+                  Open Interactive Documentation
+                  <ArrowRight className="h-4 w-4 ml-2" />
+                </Button>
+              </div>
+              
+              <div className="mt-6 text-sm text-muted-foreground dark:text-white">
+                <p>Available endpoints: Authentication, Wallet Management, Smart Contracts, Analytics & more</p>
+              </div>
             </div>
           </div>
         </div>
@@ -171,9 +178,9 @@ const API = () => {
             description: "Complete SDK documentation and examples"
           }}
           nextPage={{
-            title: "Web Template",
-            href: "/templates/web",
-            description: "Ready-to-use web application template"
+            title: "Interactive Documentation",
+            href: "/swagger",
+            description: "Explore and test API endpoints"
           }}
         />
       </div>
