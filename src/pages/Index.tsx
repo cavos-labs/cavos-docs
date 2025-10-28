@@ -82,6 +82,18 @@ const Index = () => {
                 </p>
               </div>
             </div>
+
+            <div className="flex items-start space-x-4 p-6 rounded-lg border bg-card/50 hover:bg-card/80 transition-colors">
+              <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                <Shield className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-semibold mb-2">Self-Custody Migration</h3>
+                <p className="text-muted-foreground">
+                  Export private keys from social wallets for full control
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 

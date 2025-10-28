@@ -476,7 +476,7 @@ await aegisAccount.connectAccount('existing-private-key');`}
         <h2>Account Management</h2>
 
         <p className="mb-4">
-          The Aegis SDK provides three methods for managing social login
+          The Aegis SDK provides four methods for managing social login
           accounts:
         </p>
 
@@ -493,6 +493,10 @@ await aegisAccount.connectAccount('existing-private-key');`}
             <strong>Session Recovery</strong> - Restore existing sessions using
             stored tokens
           </li>
+          <li>
+            <strong>Export Private Key</strong> - Export private keys from social
+            login wallets for migration to self-custody
+          </li>
         </ul>
 
         <Alert className="mb-6">
@@ -505,10 +509,11 @@ await aegisAccount.connectAccount('existing-private-key');`}
         </Alert>
 
         <Tabs defaultValue="password-reset" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="password-reset">Password Reset</TabsTrigger>
             <TabsTrigger value="delete-account">Delete Account</TabsTrigger>
             <TabsTrigger value="session-recovery">Session Recovery</TabsTrigger>
+            <TabsTrigger value="export-private-key">Export Private Key</TabsTrigger>
           </TabsList>
 
           <TabsContent value="password-reset" className="space-y-4">
@@ -723,6 +728,145 @@ aegisAccount.getCurrentWallet() // Get full wallet data`}
                 <li>
                   <code>SocialLoginError</code> - Network error or server issue
                 </li>
+              </ul>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="export-private-key" className="space-y-4">
+            <h4>Export Private Key</h4>
+            <p className="text-sm text-muted-foreground">
+              Export private keys from social login wallets (OAuth/Email) to migrate to self-custody. 
+              This allows users to take full control of their wallets.
+            </p>
+
+            <Alert variant="destructive" className="mb-6">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>
+                <strong>Security Warning:</strong> Private keys give full control over the wallet. 
+                Store securely (encrypted storage only), never share or log private keys. 
+                Cavos is not responsible for wallet security after export.
+              </AlertDescription>
+            </Alert>
+
+            <div className="space-y-4">
+              <h5 className="font-medium">Step 1: Request OTP</h5>
+              <p className="text-sm text-muted-foreground">
+                Request a one-time password sent to the user's registered email address.
+              </p>
+
+              <CodeBlock
+                language="typescript"
+                filename="export-step1.ts"
+                code={`// Request OTP for private key export
+const otpRequest = await aegisAccount.requestExportOTP();
+
+console.log(\`OTP sent to \${otpRequest.email}\`);
+console.log(\`Valid for \${otpRequest.expiresIn} seconds\`);
+
+// Error handling
+try {
+  const otpRequest = await aegisAccount.requestExportOTP();
+  alert('Check your email for the OTP code');
+} catch (error) {
+  if (error.code === 'RATE_LIMIT_EXCEEDED') {
+    console.error('Too many requests. Please wait 2 minutes.');
+  } else if (error.code === 'AUTHENTICATION_ERROR') {
+    console.error('Please sign in to export your private key');
+  }
+}`}
+              />
+
+              <h5 className="font-medium">Step 2: Export with OTP</h5>
+              <p className="text-sm text-muted-foreground">
+                Use the OTP code to export the private key. Show security warning to user.
+              </p>
+
+              <CodeBlock
+                language="typescript"
+                filename="export-step2.ts"
+                code={`// Export private key with OTP
+const exportResult = await aegisAccount.exportPrivateKey('123456');
+
+// Show security warning to user
+console.warn(exportResult.warning);
+console.log('Wallet:', exportResult.wallet_address);
+
+// IMPORTANT: Store the private key securely
+const privateKey = exportResult.private_key;
+// Never log or expose the private key!
+
+// Error handling
+try {
+  const exportResult = await aegisAccount.exportPrivateKey(otpCode);
+  
+  // Show security warning
+  alert(exportResult.warning);
+  
+  // Store securely (example with encrypted storage)
+  await secureStorage.setItem('private_key', exportResult.private_key);
+  
+} catch (error) {
+  if (error.code === 'INVALID_OTP') {
+    console.error('Invalid OTP code. Please try again.');
+  } else if (error.code === 'OTP_EXPIRED') {
+    console.error('OTP expired. Please request a new one.');
+  } else if (error.code === 'RATE_LIMIT_EXCEEDED') {
+    console.error('Too many failed attempts. Please wait 1 hour.');
+  }
+}`}
+              />
+            </div>
+
+            <div className="space-y-2 text-sm">
+              <h5 className="font-medium">Return Types</h5>
+              <CodeBlock
+                language="typescript"
+                filename="types.ts"
+                code={`// OTP Request Response
+interface OTPRequestResponse {
+  email: string;
+  expiresIn: number; // seconds
+  timestamp: number;
+}
+
+// Export Response
+interface ExportPrivateKeyResponse {
+  wallet_address: string;
+  private_key: string;
+  warning: string; // Security warning message
+  timestamp: number;
+}`}
+              />
+            </div>
+
+            <div className="space-y-2 text-sm">
+              <h5 className="font-medium">Rate Limits</h5>
+              <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                <li><strong>OTP Requests:</strong> 1 per 2 minutes</li>
+                <li><strong>Failed Attempts:</strong> 5 per hour (temporary block)</li>
+                <li><strong>Daily Exports:</strong> 3 per day</li>
+              </ul>
+            </div>
+
+            <div className="space-y-2 text-sm">
+              <h5 className="font-medium">Security Best Practices</h5>
+              <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                <li>Private key gives full control over wallet</li>
+                <li>Store securely (encrypted storage only)</li>
+                <li>Never share or log private keys</li>
+                <li>Cavos not responsible after export</li>
+                <li>Consider using hardware wallets for long-term storage</li>
+              </ul>
+            </div>
+
+            <div className="space-y-2 text-sm">
+              <h5 className="font-medium">Common Errors</h5>
+              <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                <li><code>AuthenticationError</code> - User not authenticated</li>
+                <li><code>InvalidOTP</code> - Invalid or expired OTP code</li>
+                <li><code>RateLimitExceeded</code> - Too many requests or failed attempts</li>
+                <li><code>DailyLimitExceeded</code> - Daily export limit reached</li>
+                <li><code>SocialLoginError</code> - Network error or server issue</li>
               </ul>
             </div>
           </TabsContent>
