@@ -302,14 +302,22 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
       security: []
 
-  /api/v1/external/auth/refresh:
+  /api/v1/external/auth/login:
     post:
       tags:
         - Authentication
-      summary: Refresh Access Token
+      summary: User Login with Email and Password
       description: |
-        Refreshes an expired access token using a refresh token. This endpoint allows you to get a new access token without requiring the user to re-authenticate.
-      operationId: refreshAccessToken
+        Authenticates a user with email and password credentials. If the user doesn't have a wallet for the specified network, one will be automatically created.
+        
+        **Flow:**
+        1. Validates organization credentials (org token or app_id)
+        2. Authenticates user with Auth0 using email/password
+        3. Retrieves or creates wallet for the user
+        4. Returns user data, wallet information, and access tokens
+        
+        **Note:** This endpoint validates network access and user creation limits based on your organization's subscription.
+      operationId: userLogin
       requestBody:
         required: true
         content:
@@ -317,35 +325,502 @@ paths:
             schema:
               type: object
               properties:
-                refresh_token:
+                email:
                   type: string
-                  description: The refresh token obtained during initial authentication
-                org_id:
+                  format: email
+                  description: User email address
+                password:
                   type: string
-                  description: Organization ID
+                  format: password
+                  description: User password
                 network:
                   type: string
                   enum: [sepolia, mainnet]
-                  description: Target network
+                  default: sepolia
+                  description: Target network for wallet deployment
               required:
-                - refresh_token
-                - org_id
-                - network
+                - email
+                - password
       responses:
         '200':
-          description: Token refreshed successfully
+          description: Login successful
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthResponse'
-        '401':
-          description: Unauthorized - invalid refresh token
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message
+                  data:
+                    type: object
+                    properties:
+                      user_id:
+                        type: string
+                        description: Auth0 user ID
+                      email:
+                        type: string
+                        format: email
+                        description: User email address
+                      organization:
+                        type: object
+                        properties:
+                          org_id:
+                            type: string
+                            description: Organization ID
+                          org_name:
+                            type: string
+                            description: Organization name
+                      wallet:
+                        allOf:
+                          - $ref: '#/components/schemas/WalletInfo'
+                          - type: object
+                            properties:
+                              private_key:
+                                type: string
+                                description: Private key is excluded from response
+                      authData:
+                        $ref: '#/components/schemas/AuthData'
+                      walletStatus:
+                        $ref: '#/components/schemas/WalletStatusInfo'
+                    required:
+                      - user_id
+                      - email
+                      - organization
+                      - authData
+        '400':
+          description: Bad request - missing required fields or invalid network
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - invalid credentials, invalid org token, or organization not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - organization not active for mainnet or subscription limits exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error - login or wallet creation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/external/auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register New User Account
+      description: |
+        Creates a new user account with email and password authentication. A wallet is automatically created for the user on the specified network.
+        
+        **Password Requirements:**
+        - Minimum 8 characters
+        - At least one uppercase letter
+        - At least one lowercase letter
+        - At least one number
+        
+        **Flow:**
+        1. Validates organization credentials (org token or app_id)
+        2. Validates email format and password strength
+        3. Creates user in Auth0
+        4. Automatically deploys a wallet for the user
+        5. Returns user data, wallet information, and access tokens
+        
+        **Note:** This endpoint validates network access and user creation limits based on your organization's subscription.
+      operationId: userRegister
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: User email address
+                password:
+                  type: string
+                  format: password
+                  description: User password (min 8 chars, must include uppercase, lowercase, and number)
+                network:
+                  type: string
+                  enum: [sepolia, mainnet]
+                  default: sepolia
+                  description: Target network for wallet deployment
+                user_metadata:
+                  type: object
+                  description: Optional user metadata to store with the Auth0 user
+                  additionalProperties: true
+              required:
+                - email
+                - password
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message
+                  data:
+                    type: object
+                    properties:
+                      user_id:
+                        type: string
+                        description: Auth0 user ID
+                      email:
+                        type: string
+                        format: email
+                        description: User email address
+                      organization:
+                        type: object
+                        properties:
+                          org_id:
+                            type: string
+                            description: Organization ID
+                          org_name:
+                            type: string
+                            description: Organization name
+                      wallet:
+                        allOf:
+                          - $ref: '#/components/schemas/WalletInfo'
+                          - type: object
+                            properties:
+                              private_key:
+                                type: string
+                                description: Private key is excluded from response
+                      user_metadata:
+                        type: object
+                        description: User metadata
+                        additionalProperties: true
+                      created_at:
+                        type: string
+                        format: date-time
+                        description: Account creation timestamp
+                      authData:
+                        $ref: '#/components/schemas/AuthData'
+                      walletStatus:
+                        $ref: '#/components/schemas/WalletStatusInfo'
+                    required:
+                      - user_id
+                      - email
+                      - organization
+                      - created_at
+                      - authData
         '400':
-          description: Bad request - missing required parameters
+          description: Bad request - missing required fields, invalid email format, weak password, or invalid network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - invalid org token or organization not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - organization not active for mainnet or subscription limits exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Conflict - user already exists in this organization
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error - registration or wallet creation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/external/auth/password/reset:
+    post:
+      tags:
+        - Authentication
+      summary: Request Password Reset
+      description: |
+        Triggers a password reset email for users who have forgotten their password. The reset link will be sent to the user's email address.
+        
+        **Security Note:** This endpoint always returns a success response to prevent user enumeration attacks. If an account exists with the provided email, a password reset link will be sent.
+        
+        **Flow:**
+        1. Validates organization using app_id
+        2. Determines Auth0 connection based on network
+        3. Sends password reset email via Auth0
+        4. Returns generic success message
+      operationId: requestPasswordReset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: Email address of the user requesting password reset
+                app_id:
+                  type: string
+                  description: Your organization's App ID
+                network:
+                  type: string
+                  enum: [sepolia, mainnet]
+                  description: Network to determine Auth0 connection
+              required:
+                - email
+                - app_id
+                - network
+      responses:
+        '200':
+          description: Password reset request processed (always returns success for security)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Generic success message
+                    example: If an account exists with this email, you will receive a password reset link
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        description: Confirmation message
+                      timestamp:
+                        type: integer
+                        description: Request timestamp in milliseconds
+                    required:
+                      - message
+                      - timestamp
+        '400':
+          description: Bad request - missing required fields, invalid email format, or invalid network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Organization not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error - configuration or processing error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/external/auth/session/recover:
+    post:
+      tags:
+        - Authentication
+      summary: Recover User Session
+      description: |
+        Recovers a complete user session using an access token. If the token is expired, it will automatically attempt to refresh it. Returns complete authentication context including user info, organization details, wallet data, and new tokens.
+        
+        **Use Cases:**
+        - Restore user session after app reload
+        - Validate and refresh expired tokens
+        - Get complete user context including wallet information
+        
+        **Flow:**
+        1. Validates access token (or refreshes if expired)
+        2. Validates organization using app_id
+        3. Fetches user information from Auth0
+        4. Ensures wallet exists (creates if needed)
+        5. Generates new access and refresh tokens
+        6. Returns complete session data
+      operationId: recoverSession
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                app_id:
+                  type: string
+                  description: Your organization's App ID
+              required:
+                - app_id
+      responses:
+        '200':
+          description: Session recovered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message
+                  data:
+                    type: object
+                    properties:
+                      user_id:
+                        type: string
+                        description: Auth0 user ID
+                      email:
+                        type: string
+                        format: email
+                        description: User email address
+                      organization:
+                        type: object
+                        properties:
+                          org_id:
+                            type: string
+                            description: Organization ID
+                          org_name:
+                            type: string
+                            description: Organization name
+                      wallet:
+                        allOf:
+                          - $ref: '#/components/schemas/WalletInfo'
+                          - type: object
+                            properties:
+                              private_key:
+                                type: string
+                                description: Private key is excluded from response
+                      authData:
+                        $ref: '#/components/schemas/AuthData'
+                      walletStatus:
+                        $ref: '#/components/schemas/WalletStatusInfo'
+                    required:
+                      - user_id
+                      - email
+                      - organization
+                      - authData
+        '400':
+          description: Bad request - missing app_id or invalid request body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - invalid or expired access token (refresh failed)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - access token does not belong to this organization or network access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: User or organization not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded - too many requests to Auth0
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error - session recovery failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/external/auth/delete:
+    post:
+      tags:
+        - Authentication
+      summary: Delete User Account
+      description: |
+        Deletes a user account from both Auth0 and Supabase, removing all authentication credentials and wallet records.
+        
+        **Important:** This operation is irreversible. All user data, wallets, and authentication credentials will be permanently deleted.
+        
+        **Process:**
+        1. Validates the access token and organization
+        2. Deletes the user from Auth0
+        3. Deletes all associated wallets from Supabase
+        4. Returns confirmation with deletion details
+      operationId: deleteUserAccount
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                app_id:
+                  type: string
+                  description: Your organization's App ID
+              required:
+                - app_id
+      responses:
+        '200':
+          description: Account deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message
+                  data:
+                    $ref: '#/components/schemas/AccountDeleteResponse'
+        '400':
+          description: Bad request - missing or invalid app_id, malformed JSON
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - invalid or expired access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - access token does not belong to this organization
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Organization not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded - too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error - deletion failed
           content:
             application/json:
               schema:
@@ -417,6 +892,204 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
         '500':
           description: Internal server error during wallet deployment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/external/wallet/export/request-otp:
+    post:
+      tags:
+        - Wallet Management
+      summary: Request OTP for Private Key Export
+      description: |
+        Requests a one-time password (OTP) to be sent to the user's email for exporting their wallet's private key. This is a security measure to prevent unauthorized access to sensitive wallet information.
+        
+        **Security Features:**
+        - 6-digit OTP code sent via email
+        - OTP expires in 10 minutes
+        - Rate limiting to prevent abuse
+        - Cooldown period between OTP requests
+        - Blocking after multiple failed attempts
+        
+        **Flow:**
+        1. Validates access token
+        2. Checks rate limits and cooldowns
+        3. Retrieves user's wallet from database
+        4. Generates 6-digit OTP
+        5. Stores OTP in Redis (expires in 10 minutes)
+        6. Sends OTP to user's email
+        7. Returns success confirmation
+        
+        **Note:** After receiving the OTP, use the export endpoint with the OTP code to retrieve the private key.
+      operationId: requestExportOTP
+      responses:
+        '200':
+          description: OTP sent successfully to user's email
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message
+                  data:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                        format: email
+                        description: Email address where OTP was sent
+                      expiresIn:
+                        type: integer
+                        description: OTP expiration time in seconds (600 seconds = 10 minutes)
+                      timestamp:
+                        type: integer
+                        description: Request timestamp in milliseconds
+                    required:
+                      - email
+                      - expiresIn
+                      - timestamp
+        '401':
+          description: Unauthorized - invalid or expired access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Wallet not found for user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded - too many OTP requests or failed attempts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+                    enum: [RATE_LIMIT_EXCEEDED, TEMPORARILY_BLOCKED, OTP_COOLDOWN]
+                  retryAfter:
+                    type: integer
+                    description: Seconds to wait before retrying
+        '500':
+          description: Internal server error - failed to send email or store OTP
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/external/wallet/export/verify:
+    post:
+      tags:
+        - Wallet Management
+      summary: Verify OTP and Export Private Key
+      description: |
+        Verifies the OTP code sent to the user's email and exports the decrypted private key if verification succeeds. This is the second step in the wallet export process after requesting an OTP.
+        
+        **Security Features:**
+        - Validates 6-digit OTP code
+        - OTP is single-use (invalidated after successful verification)
+        - Rate limiting on failed attempts
+        - Daily export limit to prevent abuse
+        - Blocks user after multiple failed attempts
+        - Clears failed attempts counter on success
+        
+        **Flow:**
+        1. Validates access token
+        2. Validates OTP format (6 digits)
+        3. Checks rate limits and failed attempts
+        4. Validates OTP against stored value
+        5. Invalidates OTP (one-time use)
+        6. Retrieves encrypted private key from database
+        7. Decrypts private key using organization hash secret
+        8. Records successful export
+        9. Returns decrypted private key with security warning
+        
+        **Important:** The private key is returned in plain text. Store it securely and never share it with anyone.
+      operationId: verifyExportOTP
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                otp:
+                  type: string
+                  description: 6-digit OTP code received via email
+                  pattern: '^\\d{6}$'
+                  example: "123456"
+              required:
+                - otp
+      responses:
+        '200':
+          description: OTP verified successfully and private key exported
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message
+                  data:
+                    type: object
+                    properties:
+                      private_key:
+                        type: string
+                        description: Decrypted private key (store securely!)
+                      wallet_address:
+                        type: string
+                        description: Wallet address associated with the private key
+                      warning:
+                        type: string
+                        description: Security warning about private key storage
+                    required:
+                      - private_key
+                      - wallet_address
+                      - warning
+        '400':
+          description: Bad request - missing OTP or invalid OTP format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - invalid or expired access token, or invalid/expired OTP
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Wallet not found for user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded - too many failed attempts, daily limit exceeded, or temporarily blocked
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+                    enum: [RATE_LIMIT_EXCEEDED, TEMPORARILY_BLOCKED, DAILY_LIMIT_EXCEEDED]
+                  retryAfter:
+                    type: integer
+                    description: Seconds to wait before retrying
+        '500':
+          description: Internal server error - decryption failed or database error
           content:
             application/json:
               schema:
@@ -604,6 +1277,17 @@ paths:
       summary: Get Wallet Balance
       description: |
         Retrieves the token balance for a specific wallet address. Supports ERC20 tokens on Starknet.
+        
+        **Features:**
+        - Automatically determines network from wallet record
+        - Supports any ERC20 token by specifying contract address
+        - Returns both human-readable and raw balance values
+        
+        **How it works:**
+        1. Validates organization authentication (org token or app_id)
+        2. Looks up wallet in database to determine network
+        3. Queries token contract balance on Starknet
+        4. Converts raw balance to human-readable format using decimals
       operationId: getWalletBalance
       requestBody:
         required: true
@@ -617,11 +1301,11 @@ paths:
                   description: Wallet address to check balance for
                 tokenAddress:
                   type: string
-                  description: ERC20 token contract address (defaults to USDC)
+                  description: ERC20 token contract address (defaults to USDC on Starknet)
                   default: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8"
                 decimals:
                   type: integer
-                  description: Token decimals (defaults to 6 for USDC)
+                  description: Token decimals for conversion (defaults to 6 for USDC)
                   default: 6
               required:
                 - address
@@ -635,15 +1319,21 @@ paths:
                 properties:
                   balance:
                     type: number
-                    description: Token balance in human-readable format
+                    description: Token balance in human-readable format (converted using decimals)
                   balanceRaw:
                     type: string
-                    description: Raw token balance from contract
+                    description: Raw token balance from contract (in smallest unit)
                 required:
                   - balance
                   - balanceRaw
         '400':
           description: Bad request - missing wallet address
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - invalid org token or app_id
           content:
             application/json:
               schema:
@@ -655,7 +1345,147 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '500':
-          description: Internal server error
+          description: Internal server error - RPC configuration error or contract query failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/external/wallet/erc721/balance:
+    get:
+      tags:
+        - Wallet Information
+      summary: Get ERC721 Token Balance (NFT Count)
+      description: |
+        Retrieves the number of ERC721 tokens (NFTs) owned by a specific wallet address for a given NFT contract.
+        
+        **Features:**
+        - Automatically determines network from wallet record
+        - Supports any ERC721 contract by specifying contract address
+        - Returns the count of NFTs owned (not individual token IDs)
+        
+        **How it works:**
+        1. Validates organization authentication (org token)
+        2. Looks up wallet in database to determine network
+        3. Queries ERC721 contract balance on Starknet
+        4. Returns the number of NFTs owned
+      operationId: getERC721Balance
+      parameters:
+        - name: address
+          in: query
+          required: true
+          description: Wallet address to check NFT balance for
+          schema:
+            type: string
+        - name: tokenAddress
+          in: query
+          required: true
+          description: ERC721 NFT contract address
+          schema:
+            type: string
+      responses:
+        '200':
+          description: NFT balance retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  balance:
+                    type: integer
+                    description: Number of ERC721 tokens (NFTs) owned by the wallet
+                required:
+                  - balance
+        '400':
+          description: Bad request - missing required parameters (address or tokenAddress)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - invalid org token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Wallet not found for organization
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error - RPC configuration error or contract query failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/external/wallet/erc721/owner_of:
+    get:
+      tags:
+        - Wallet Information
+      summary: Get ERC721 Token Owner
+      description: |
+        Retrieves the owner address of a specific ERC721 token (NFT) by its token ID.
+        
+        **Features:**
+        - Automatically determines network from organization's wallet records
+        - Supports any ERC721 contract by specifying contract address
+        - Returns the owner address in hex format
+        
+        **How it works:**
+        1. Validates organization authentication (org token)
+        2. Looks up any wallet from organization to determine network
+        3. Queries ERC721 contract owner_of function on Starknet
+        4. Returns the owner address of the specified token
+      operationId: getERC721Owner
+      parameters:
+        - name: tokenAddress
+          in: query
+          required: true
+          description: ERC721 NFT contract address
+          schema:
+            type: string
+        - name: tokenId
+          in: query
+          required: true
+          description: Token ID of the NFT to query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Owner address retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  owner:
+                    type: string
+                    description: Owner address of the NFT in hex format
+                required:
+                  - owner
+        '400':
+          description: Bad request - missing required parameters (tokenAddress or tokenId)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - invalid org token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: No wallets found for organization or token not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error - RPC configuration error or contract query failed
           content:
             application/json:
               schema:
@@ -804,6 +1634,120 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
         '500':
           description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/external/wallet/transactions:
+    get:
+      tags:
+        - Transactions
+      summary: Get User Wallet Transactions
+      description: |
+        Retrieves transactions for all wallets belonging to the authenticated user. Transactions are filtered by user ID and organization ID from the access token.
+        
+        **Features:**
+        - Returns transactions for all user wallets
+        - Supports filtering by wallet address
+        - Supports pagination with limit and offset
+        - Automatically filters by network from token
+        
+        **How it works:**
+        1. Validates access token (Bearer token)
+        2. Extracts user_id, org_id, and network from token
+        3. Queries all wallets for the user
+        4. Returns transactions with pagination support
+      operationId: getUserWalletTransactions
+      parameters:
+        - name: address
+          in: query
+          required: false
+          description: Filter by specific wallet address
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of transactions to return per wallet
+          schema:
+            type: integer
+            minimum: 1
+        - name: offset
+          in: query
+          required: false
+          description: Number of transactions to skip per wallet (for pagination)
+          schema:
+            type: integer
+            minimum: 0
+      responses:
+        '200':
+          description: Wallet transactions retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Request success status
+                  user_id:
+                    type: string
+                    description: User ID from token
+                  org_id:
+                    type: string
+                    description: Organization ID from token
+                  wallets:
+                    type: array
+                    description: Array of wallets with their transactions
+                    items:
+                      type: object
+                      properties:
+                        address:
+                          type: string
+                          description: Wallet address
+                        network:
+                          type: string
+                          enum: [sepolia, mainnet]
+                          description: Network where wallet is deployed
+                        created_at:
+                          type: string
+                          format: date-time
+                          description: Wallet creation timestamp
+                        total_transactions:
+                          type: integer
+                          description: Total number of transactions for this wallet
+                        transactions:
+                          type: array
+                          description: Paginated list of transactions
+                          items:
+                            type: object
+                            description: Transaction object (structure depends on stored format)
+                required:
+                  - success
+                  - user_id
+                  - org_id
+                  - wallets
+        '400':
+          description: Bad request - invalid token or missing required fields in token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - missing, invalid, or expired access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: No wallets found for user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error - database query failed
           content:
             application/json:
               schema:
@@ -1277,6 +2221,35 @@ components:
         timestamp:
           type: integer
           description: Event timestamp
+
+    AccountDeleteResponse:
+      type: object
+      properties:
+        user_id:
+          type: string
+          description: Auth0 user ID that was deleted
+        email:
+          type: string
+          format: email
+          description: Email address of the deleted user
+        org_id:
+          type: string
+          description: Organization ID
+        deletedWalletsCount:
+          type: integer
+          description: Number of wallets that were deleted
+        alreadyDeletedFromAuth0:
+          type: boolean
+          description: Whether the user was already deleted from Auth0 (optional)
+        timestamp:
+          type: integer
+          description: Deletion timestamp in milliseconds
+      required:
+        - user_id
+        - email
+        - org_id
+        - deletedWalletsCount
+        - timestamp
 
 tags:
   - name: Authentication
